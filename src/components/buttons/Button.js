@@ -3,6 +3,9 @@ import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled, { css, keyframes } from 'styled-components';
 import CachedIcon from '@material-ui/icons/Cached';
+import ListIcon from '@material-ui/icons/List';
+import ArchiveIcon from '@material-ui/icons/Archive';
+import NewIcon from '@material-ui/icons/AddCircleOutline';
 
 const ButtonStyled = styled.button`
   width: 9rem;
@@ -52,13 +55,22 @@ const NavLinkStyled = styled(NavLink)`
   text-weight: 600;
   font-size: 16px;
   box-shadow: 0 4px 4px lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: black;
 
   &:hover {
     background-color: ${({ theme }) => theme.mainColorHover};
   }
 
-  &:link--active {
+  &.link--active {
     background-color: ${({ theme }) => theme.mainColorHover};
+  }
+
+  svg {
+    font-size: 20px;
   }
 `;
 
@@ -77,14 +89,31 @@ const IconWrapper = styled.span`
   }
 `;
 
-const Button = ({ text, success, error, link, to, onClick, isFetching }) => {
+const Button = ({ text, success, error, link, to, onClick, isFetching, icon }) => {
   const handleClick = () => onClick();
+
+  const buttonIcon = () => {
+    switch (icon) {
+      case 'list': {
+        return <ListIcon />;
+      }
+      case 'archive': {
+        return <ArchiveIcon />;
+      }
+      case 'new': {
+        return <NewIcon />;
+      }
+      default: {
+        return '';
+      }
+    }
+  };
 
   return (
     <>
       {link ? (
         <NavLinkStyled to={to} activeClassName="link--active">
-          {text}
+          {buttonIcon()} {text}
         </NavLinkStyled>
       ) : (
         <ButtonStyled
@@ -115,6 +144,7 @@ Button.propTypes = {
   to: PropTypes.string,
   onClick: PropTypes.func,
   isFetching: PropTypes.bool,
+  icon: PropTypes.string,
 };
 
 Button.defaultProps = {
@@ -124,6 +154,7 @@ Button.defaultProps = {
   to: '',
   onClick: () => {},
   isFetching: false,
+  icon: '',
 };
 
 export default Button;

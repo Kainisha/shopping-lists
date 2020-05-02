@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import PrivateRoute from 'router';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyles from 'layout/globalStyles';
 import createSagaMiddleware from 'redux-saga';
@@ -8,9 +9,10 @@ import { applyMiddleware, createStore } from 'redux';
 import { createBrowserHistory } from 'history';
 import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 
-import Login from 'components/sites/login/Login';
-import List from 'components/sites/list/List';
-import NewItem from 'components/sites/newItem/NewItem';
+import Login from 'views/Login';
+import List from 'views/List';
+import New from 'views/New';
+import Archived from 'views/Archived';
 import theme from 'layout/theme';
 
 import saga from 'saga';
@@ -26,7 +28,7 @@ const store = createStore(createRootReducer(history), middleware);
 
 sagaMiddleware.run(saga);
 
-function App() {
+const App = () => {
   return (
     <Provider store={store}>
       <ConnectedRouter history={history}>
@@ -35,18 +37,21 @@ function App() {
             <Route path="/login">
               <Login />
             </Route>
-            <Route path="/list">
+            <PrivateRoute path="/list">
               <List />
-            </Route>
-            <Route path="/new">
-              <NewItem />
-            </Route>
+            </PrivateRoute>
+            <PrivateRoute path="/new">
+              <New />
+            </PrivateRoute>
+            <PrivateRoute to="/archived">
+              <Archived />
+            </PrivateRoute>
           </Switch>
           <GlobalStyles />
         </ThemeProvider>
       </ConnectedRouter>
     </Provider>
   );
-}
+};
 
 export default App;

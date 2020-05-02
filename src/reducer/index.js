@@ -6,6 +6,7 @@ import { REQUEST, SET_USER, SET_ERROR } from 'actions';
 const initState = {
   token: '',
   user: {},
+  isLogged: false,
   isFetching: false,
   isError: false,
 };
@@ -23,6 +24,7 @@ const authReducer = (state = initState, { type, payload }) => {
         ...state,
         user: payload.user,
         token: payload.token,
+        isLogged: true,
       };
     }
     case SET_ERROR: {
