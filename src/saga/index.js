@@ -1,12 +1,12 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest, select } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
 import axios from 'axios';
 import url from 'api';
 import md5 from 'js-md5';
 
-import { REQUEST, AUTH_REQUEST, SET_USER, SET_ERROR } from 'actions';
+import { REQUEST, AUTH_REQUEST, SET_USER, SET_ERROR, SET_LISTS, GET_LISTS } from 'actions';
 
-const fetch = async ({ login, password }) => {
+const fetchLogin = async ({ login, password }) => {
   md5(password);
   const hash = md5.create();
   hash.update(password);
@@ -24,7 +24,7 @@ function* authorize({ payload: { login, password } }) {
   yield put({ type: SET_ERROR, payload: false });
 
   try {
-    const response = yield call(fetch, { login, password });
+    const response = yield call(fetchLogin, { login, password });
     yield put({ type: REQUEST, payload: false });
 
     if (response.status !== 200) {
@@ -40,8 +40,41 @@ function* authorize({ payload: { login, password } }) {
   }
 }
 
+const fetchShoppingLists = async ({ token }) => {
+  const response = await axios.get(`${url}/shopping-lists`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};
+
+const getToken = (state) => state.auth.token;
+
+function* getShoppingLists() {
+  yield put({ type: REQUEST, payload: true });
+  yield put({ type: SET_ERROR, payload: false });
+  const token = yield select(getToken);
+
+  try {
+    const response = yield call(fetchShoppingLists, { token });
+    yield put({ type: REQUEST, payload: false });
+
+    if (response.status !== 200) {
+      yield put({ type: SET_ERROR, payload: true });
+      return;
+    }
+
+    yield put({ type: SET_LISTS, payload: response.data });
+  } catch (error) {
+    yield put({ type: REQUEST, payload: false });
+    yield put({ type: SET_ERROR, payload: true });
+  }
+}
+
 function* saga() {
   yield takeLatest(AUTH_REQUEST, authorize);
+  yield takeLatest(GET_LISTS, getShoppingLists);
 }
 
 export default saga;

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
+import ShoppingListsReducer from 'reducer/ShoppingLists';
 
 import { REQUEST, SET_USER, SET_ERROR } from 'actions';
 
@@ -11,7 +12,7 @@ const initState = {
   isError: false,
 };
 
-const authReducer = (state = initState, { type, payload }) => {
+const AuthReducer = (state = initState, { type, payload }) => {
   switch (type) {
     case REQUEST: {
       return {
@@ -40,8 +41,9 @@ const authReducer = (state = initState, { type, payload }) => {
 
 const createRootReducer = (history) =>
   combineReducers({
-    auth: authReducer,
+    auth: AuthReducer,
     router: connectRouter(history),
+    shoppingLists: ShoppingListsReducer,
   });
 
 export default createRootReducer;

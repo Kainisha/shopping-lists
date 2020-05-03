@@ -5,6 +5,7 @@ import Button from 'components/buttons/Button';
 import TextInput from 'components/inputs/Text';
 import { connect } from 'react-redux';
 import { authorize } from 'actions';
+import ErrorMessage from 'components/utilities/ErrorMessage';
 
 const errorShow = keyframes`
     to {
@@ -39,12 +40,11 @@ const ModalStyled = styled.div`
 `;
 
 const ErrorWrapperStyled = styled.div`
-  height: 20px;
+  height: 45px;
   margin: 1rem 0;
 `;
 
 const ErrorStyled = styled.div`
-  color: ${({ theme }) => theme.errorColor};
   opacity: 0;
   transform-origin: top;
   animation: ${errorShow} 300ms linear forwards;
@@ -88,7 +88,11 @@ const Login = ({ loginAction, isFetching, isError }) => {
           changeValue={handleChangeValue}
         />
         <ErrorWrapperStyled>
-          {isError && <ErrorStyled>Invalid login or password</ErrorStyled>}
+          {isError && (
+            <ErrorStyled>
+              <ErrorMessage text="Invalid login or password" />
+            </ErrorStyled>
+          )}
         </ErrorWrapperStyled>
         <ButtonWrapperStyled>
           <Button text="Log in" isFetching={isFetching} onClick={handleLogin} />
