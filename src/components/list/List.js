@@ -16,12 +16,38 @@ const ListStyled = styled.div`
 
 const InfoStyled = styled.div`
   display: grid;
-  grid-template-columns: 1fr 4fr 2fr 5fr;
-  grid-template-areas: 'icon name counter bar';
+  grid-row-gap: 10px;
+  grid-template-areas: 'icon name' 'counter counter' 'bar bar';
+  align-items: center;
+  grid-template-columns: 1fr 8fr;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 4fr 2fr 5fr;
+    grid-template-areas: 'icon name counter bar';
+  }
 `;
 
 const IconStyled = styled.div`
   grid-area: icon;
+  border-bottom: 1px solid lightgrey;
+  padding-bottom: 10px;
+
+  @media (min-width: 768px) {
+    border: 0;
+    padding-bottom: 0;
+  }
+`;
+
+const IconWrapperStyled = styled.div`
+  background: ${({ theme }) => theme.mainColor};
+  border-radius: 5px;
+  border: 1px solid ${({ theme }) => theme.mainColorHover};
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   svg {
     transition: transform 300ms ease-in-out;
@@ -36,6 +62,16 @@ const IconStyled = styled.div`
 
 const NameStyled = styled.div`
   grid-area: name;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid lightgrey;
+  padding-bottom: 10px;
+
+  @media (min-width: 768px) {
+    border: 0;
+    padding-bottom: 0;
+  }
 `;
 
 const CounterStyled = styled.div`
@@ -61,9 +97,8 @@ const ItemsWrapperStyled = styled.div`
   animation: ${opacity} 300ms linear forwards;
   display: none;
   padding: 20px 0;
-  margin-left: 20px;
   margin-top: 20px;
-  border-top: 1px solid lightgray;
+  border-top: 1px solid gray;
 
   ${({ showItems }) =>
     showItems &&
@@ -101,8 +136,10 @@ const List = ({ name, items }) => {
   return (
     <ListStyled>
       <InfoStyled onClick={handleShowItems}>
-        <IconStyled showItems={showItems}>
-          <ArrowIcon />
+        <IconStyled>
+          <IconWrapperStyled showItems={showItems}>
+            <ArrowIcon />
+          </IconWrapperStyled>
         </IconStyled>
         <NameStyled>
           <span>{name}</span>

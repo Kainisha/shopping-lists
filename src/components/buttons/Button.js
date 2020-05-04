@@ -46,7 +46,7 @@ const ButtonStyled = styled.button`
 `;
 
 const NavLinkStyled = styled(NavLink)`
-  width: 9rem;
+  width: 4rem;
   height: 2rem;
   transition: background-color 300ms ease-in-out, transform 300ms ease-in-out;
   border: 2px solid ${({ theme }) => theme.mainColorHover};
@@ -71,6 +71,22 @@ const NavLinkStyled = styled(NavLink)`
 
   svg {
     font-size: 20px;
+  }
+
+  span {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    width: 9rem;
+
+    span {
+      display: block;
+    }
+
+    svg {
+      margin-right: 10px;
+    }
   }
 `;
 
@@ -113,7 +129,8 @@ const Button = ({ text, success, error, link, to, onClick, isFetching, icon }) =
     <>
       {link ? (
         <NavLinkStyled to={to} activeClassName="link--active">
-          {buttonIcon()} {text}
+          {buttonIcon()}
+          <span>{text}</span>
         </NavLinkStyled>
       ) : (
         <ButtonStyled

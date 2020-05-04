@@ -4,7 +4,15 @@ import axios from 'axios';
 import url from 'api';
 import md5 from 'js-md5';
 
-import { REQUEST, AUTH_REQUEST, SET_USER, SET_ERROR, SET_LISTS, GET_LISTS } from 'actions';
+import {
+  REQUEST,
+  AUTH_REQUEST,
+  SET_USER,
+  SET_ERROR,
+  SET_LISTS,
+  GET_LISTS,
+  UPDATE_LIST_ITEM,
+} from 'actions';
 
 const fetchLogin = async ({ login, password }) => {
   md5(password);
@@ -72,9 +80,38 @@ function* getShoppingLists() {
   }
 }
 
+const putListListItem = async ({ token, id, description, done }) => {
+  const data = JSON.stringify({ description, done });
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.put(`${url}/shopping-list-items/${id}`, data, options);
+  return response;
+};
+
+function* updateShoppingListItem({ payload: { description, id, done } }) {
+  yield put({ type: SET_ERROR, payload: false });
+  const token = yield select(getToken);
+
+  try {
+    const response = yield call(putListListItem, { description, id, done, token });
+
+    if (response.status !== 200) {
+      yield put({ type: SET_ERROR, payload: true });
+    }
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+  }
+}
+
 function* saga() {
   yield takeLatest(AUTH_REQUEST, authorize);
   yield takeLatest(GET_LISTS, getShoppingLists);
+  yield takeLatest(UPDATE_LIST_ITEM, updateShoppingListItem);
 }
 
 export default saga;

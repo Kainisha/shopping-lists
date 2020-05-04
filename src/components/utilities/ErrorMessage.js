@@ -7,10 +7,15 @@ const ErrorMessageStyled = styled.div`
   border: 1px solid ${({ theme }) => theme.errorColorHover};
   background-color: ${({ theme }) => theme.errorColor};
   color: white;
-  padding: 10px;
+  padding: 5px;
   border-radius: 10px;
   display: flex;
   align-items: center;
+  box-shadow: 0 5px 5px lightgrey;
+
+  svg {
+    font-size: 20px;
+  }
 `;
 
 const TextStyled = styled.span`

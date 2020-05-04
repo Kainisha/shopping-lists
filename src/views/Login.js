@@ -28,8 +28,9 @@ const BackgroundStyled = styled.div`
 `;
 
 const ModalStyled = styled.div`
-  height: 400px;
+  height: 350px;
   width: 400px;
+  margin: 0 1rem;
   box-shadow: 0 0 10px #838383;
   background: white;
   padding: 1rem;

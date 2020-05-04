@@ -4,16 +4,21 @@ import Button from 'components/buttons/Button';
 
 const HeaderStyled = styled.header`
   height: 40px;
-  width: 100%;
   position: sticky;
   top: 0;
   box-shadow: 0 4px 4px #838383;
   display: flex;
+  justify-content: center;
   align-items: center;
   padding: 1rem;
+  background: white;
 
   a {
     margin: 0 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    justify-content: flex-start;
   }
 `;
 

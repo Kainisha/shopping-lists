@@ -12,7 +12,7 @@ const WrapperStyled = styled.div`
 const SliderStyled = styled.div`
   position: relative;
   height: 10px;
-  width: 300px;
+  width: 270px;
   background: ${({ theme }) => theme.defaultColor};
 `;
 
@@ -26,7 +26,7 @@ const BarStyled = styled.div`
   top: 0;
   left: 0;
   transition: transform 300ms ease-in-out;
-  width: 300px;
+  width: 270px;
   transform: scaleX(${({ barWidth, counter }) => barWidth * counter});
   transform-origin: left;
   height: 100%;
