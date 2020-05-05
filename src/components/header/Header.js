@@ -12,6 +12,7 @@ const HeaderStyled = styled.header`
   align-items: center;
   padding: 1rem;
   background: white;
+  z-index: 100;
 
   a {
     margin: 0 0.5rem;

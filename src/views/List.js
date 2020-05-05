@@ -6,7 +6,9 @@ import Wrapper from 'components/list/Wrapper';
 
 const List = ({ getListsAction, shoppingLists }) => {
   useEffect(() => {
-    getListsAction();
+    const filters = new URLSearchParams();
+    filters.append('done', false);
+    getListsAction({ filters: filters.toString() });
   }, []);
 
   return (
@@ -38,7 +40,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getListsAction: () => dispatch({ type: 'GET_LISTS' }),
+    getListsAction: ({ filters }) => dispatch({ type: 'GET_LISTS', payload: { filters } }),
   };
 };
 

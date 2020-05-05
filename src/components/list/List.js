@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css, keyframes } from 'styled-components';
+import { connect } from 'react-redux';
 import ArrowIcon from '@material-ui/icons/PlayArrow';
 
 import Bar from 'components/list/Bar';
 import Item from 'components/list/items/Item';
+import IconButton from 'components/buttons/IconButton';
 
 const ListStyled = styled.div`
   border-bottom: 1px solid lightgray;
@@ -12,6 +14,22 @@ const ListStyled = styled.div`
   margin: 1rem 0;
   display: grid;
   grid-template-columns: 1fr;
+  position: relative;
+  outline: 0;
+
+  .button--done {
+    position: absolute;
+    right: 55px;
+    z-index: 1;
+    top: -25px;
+  }
+
+  .button--create {
+    position: absolute;
+    right: 5px;
+    z-index: 1;
+    top: -25px;
+  }
 `;
 
 const InfoStyled = styled.div`
@@ -107,15 +125,16 @@ const ItemsWrapperStyled = styled.div`
     `}
 `;
 
-const List = ({ name, items }) => {
+const List = ({ name, items, done, id, updateAction }) => {
   const initCounter = items.filter((item) => item.done).length;
   const [counter, setCounter] = useState(initCounter);
   const [listItems, setListItems] = useState(items);
   const [showItems, setShowItems] = useState(false);
+  const [doneStatus, setDoneStatus] = useState(done);
 
-  const handleClickItem = (id) => {
+  const handleClickItem = (itemId) => {
     const changedItems = listItems.map((item) => {
-      if (item.id !== id) {
+      if (item.id !== itemId) {
         return item;
       }
 
@@ -129,12 +148,21 @@ const List = ({ name, items }) => {
     setCounter(changedCounter);
   };
 
-  const handleShowItems = () => {
-    setShowItems(!showItems);
+  const handleShowItems = () => setShowItems(!showItems);
+  const handleSetDone = () => {
+    setDoneStatus(!done);
+    updateAction({ id, name, done: !done });
   };
 
   return (
     <ListStyled>
+      <IconButton
+        className="button--done"
+        success={doneStatus}
+        icon="done"
+        onClick={handleSetDone}
+      />
+      <IconButton className="button--create" icon="create" />
       <InfoStyled onClick={handleShowItems}>
         <IconStyled>
           <IconWrapperStyled showItems={showItems}>
@@ -154,11 +182,11 @@ const List = ({ name, items }) => {
 
       {true && (
         <ItemsWrapperStyled showItems={showItems}>
-          {listItems.map(({ id, description, done }) => (
+          {listItems.map(({ id: itemId, description, done: itemDone }) => (
             <Item
-              id={id}
+              id={itemId}
               description={description}
-              done={done}
+              done={itemDone}
               clickItem={handleClickItem}
               key={`list-item-${id}`}
             />
@@ -170,8 +198,18 @@ const List = ({ name, items }) => {
 };
 
 List.propTypes = {
+  id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   items: PropTypes.array.isRequired,
+  done: PropTypes.bool.isRequired,
+  updateAction: PropTypes.func.isRequired,
 };
 
-export default List;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateAction: ({ id, done, name }) =>
+      dispatch({ type: 'UPDATE_LIST', payload: { id, done, name } }),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(List);

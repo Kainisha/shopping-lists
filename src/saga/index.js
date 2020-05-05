@@ -12,6 +12,7 @@ import {
   SET_LISTS,
   GET_LISTS,
   UPDATE_LIST_ITEM,
+  UPDATE_LIST,
 } from 'actions';
 
 const fetchLogin = async ({ login, password }) => {
@@ -48,8 +49,8 @@ function* authorize({ payload: { login, password } }) {
   }
 }
 
-const fetchShoppingLists = async ({ token }) => {
-  const response = await axios.get(`${url}/shopping-lists`, {
+const fetchShoppingLists = async ({ token, filters }) => {
+  const response = await axios.get(`${url}/shopping-lists?${filters}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -59,13 +60,13 @@ const fetchShoppingLists = async ({ token }) => {
 
 const getToken = (state) => state.auth.token;
 
-function* getShoppingLists() {
+function* getShoppingLists({ payload: { filters } }) {
   yield put({ type: REQUEST, payload: true });
   yield put({ type: SET_ERROR, payload: false });
   const token = yield select(getToken);
 
   try {
-    const response = yield call(fetchShoppingLists, { token });
+    const response = yield call(fetchShoppingLists, { token, filters });
     yield put({ type: REQUEST, payload: false });
 
     if (response.status !== 200) {
@@ -80,7 +81,7 @@ function* getShoppingLists() {
   }
 }
 
-const putListListItem = async ({ token, id, description, done }) => {
+const putListItem = async ({ token, id, description, done }) => {
   const data = JSON.stringify({ description, done });
   const options = {
     headers: {
@@ -98,7 +99,35 @@ function* updateShoppingListItem({ payload: { description, id, done } }) {
   const token = yield select(getToken);
 
   try {
-    const response = yield call(putListListItem, { description, id, done, token });
+    const response = yield call(putListItem, { description, id, done, token });
+
+    if (response.status !== 200) {
+      yield put({ type: SET_ERROR, payload: true });
+    }
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+  }
+}
+
+const putList = async ({ token, id, name, done }) => {
+  const data = JSON.stringify({ name, done });
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.put(`${url}/shopping-lists/${id}`, data, options);
+  return response;
+};
+
+function* updateShoppingList({ payload: { name, id, done } }) {
+  yield put({ type: SET_ERROR, payload: false });
+  const token = yield select(getToken);
+
+  try {
+    const response = yield call(putList, { name, id, done, token });
 
     if (response.status !== 200) {
       yield put({ type: SET_ERROR, payload: true });
@@ -112,6 +141,7 @@ function* saga() {
   yield takeLatest(AUTH_REQUEST, authorize);
   yield takeLatest(GET_LISTS, getShoppingLists);
   yield takeLatest(UPDATE_LIST_ITEM, updateShoppingListItem);
+  yield takeLatest(UPDATE_LIST, updateShoppingList);
 }
 
 export default saga;

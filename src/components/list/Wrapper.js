@@ -18,8 +18,8 @@ const Wrapper = ({ lists, isFetching, isError }) => {
         <Loader big />
       ) : (
         <WrapperStyled>
-          {lists.map(({ id, name, shopping_list_items: items }) => (
-            <List name={name} items={items} key={`list-${id}`} />
+          {lists.map(({ id, name, shopping_list_items: items, done }) => (
+            <List name={name} items={items} done={done} id={id} key={`list-${id}`} />
           ))}
         </WrapperStyled>
       )}
