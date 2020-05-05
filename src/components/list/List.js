@@ -150,8 +150,8 @@ const List = ({ name, items, done, id, updateAction }) => {
 
   const handleShowItems = () => setShowItems(!showItems);
   const handleSetDone = () => {
-    setDoneStatus(!done);
-    updateAction({ id, name, done: !done });
+    setDoneStatus(!doneStatus);
+    updateAction({ id, name, done: doneStatus });
   };
 
   return (
