@@ -11,7 +11,7 @@ import { routerMiddleware, ConnectedRouter } from 'connected-react-router';
 
 import Login from 'views/Login';
 import List from 'views/List';
-import New from 'views/New';
+import Create from 'views/Create';
 import Archived from 'views/Archived';
 import theme from 'layout/theme';
 
@@ -40,8 +40,8 @@ const App = () => {
             <PrivateRoute path="/list">
               <List />
             </PrivateRoute>
-            <PrivateRoute path="/new">
-              <New />
+            <PrivateRoute path="/create/:id">
+              <Create />
             </PrivateRoute>
             <PrivateRoute to="/archived">
               <Archived />

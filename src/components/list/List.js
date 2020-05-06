@@ -162,7 +162,7 @@ const List = ({ name, items, done, id, updateAction }) => {
         icon="done"
         onClick={handleSetDone}
       />
-      <IconButton className="button--create" icon="create" />
+      <IconButton className="button--create" icon="create" link to={`/create/${id}`} />
       <InfoStyled onClick={handleShowItems}>
         <IconStyled>
           <IconWrapperStyled showItems={showItems}>
