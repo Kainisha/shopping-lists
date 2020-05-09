@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
@@ -83,8 +83,12 @@ const LabelSpanStyled = styled.span`
   color: gray;
 `;
 
-const Text = ({ name, label, rowGap, password, changeValue }) => {
-  const [value, setValue] = useState('');
+const Text = ({ name, label, rowGap, password, changeValue, initValue }) => {
+  const [value, setValue] = useState(initValue);
+
+  useEffect(() => {
+    setValue(initValue);
+  }, [initValue]);
 
   const handleChange = (e) => {
     const { value: targetValue } = e.target;
@@ -110,11 +114,13 @@ Text.propTypes = {
   rowGap: PropTypes.bool,
   password: PropTypes.bool,
   changeValue: PropTypes.func.isRequired,
+  initValue: PropTypes.string,
 };
 
 Text.defaultProps = {
   rowGap: false,
   password: false,
+  initValue: '',
 };
 
 export default Text;

@@ -1,10 +1,16 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
+import MainTemplate from 'layout/MainTemplate';
+import Form from 'components/create/Form';
 
-const New = () => {
-  const { id } = useParams();
+const Create = () => {
+  // const { id } = useParams();
 
-  return <div>new item {id}</div>;
+  return (
+    <MainTemplate>
+      <Form />
+    </MainTemplate>
+  );
 };
 
-export default New;
+export default Create;

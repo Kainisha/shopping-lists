@@ -27,7 +27,7 @@ const Header = () => (
   <HeaderStyled>
     <Button text="List" to="/list" main link icon="list" />
     <Button text="Archived" to="/achived" main link icon="archive" />
-    <Button text="New" to="/new" main link icon="new" />
+    <Button text="Create" to="/create" main link icon="new" />
   </HeaderStyled>
 );
 

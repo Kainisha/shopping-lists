@@ -10,7 +10,7 @@ import NewIcon from '@material-ui/icons/AddCircleOutline';
 const ButtonStyled = styled.button`
   width: 9rem;
   height: 2rem;
-  transition: background-color 300ms ease-in-out, transform 300ms ease-in-out;
+  transition: background-color 300ms ease-in-out;
   border: 2px solid ${({ theme }) => theme.mainColorHover};
   background-color: ${({ theme }) => theme.mainColor};
   border-radius: 5px;
@@ -105,7 +105,7 @@ const IconWrapper = styled.span`
   }
 `;
 
-const Button = ({ text, success, error, link, to, onClick, isFetching, icon }) => {
+const Button = ({ text, success, error, link, to, onClick, isFetching, icon, type }) => {
   const handleClick = () => onClick();
 
   const buttonIcon = () => {
@@ -134,7 +134,7 @@ const Button = ({ text, success, error, link, to, onClick, isFetching, icon }) =
         </NavLinkStyled>
       ) : (
         <ButtonStyled
-          type="button"
+          type={type}
           onClick={handleClick}
           className=""
           error={error}
@@ -162,6 +162,7 @@ Button.propTypes = {
   onClick: PropTypes.func,
   isFetching: PropTypes.bool,
   icon: PropTypes.string,
+  type: PropTypes.string,
 };
 
 Button.defaultProps = {
@@ -172,6 +173,7 @@ Button.defaultProps = {
   onClick: () => {},
   isFetching: false,
   icon: '',
+  type: 'button',
 };
 
 export default Button;

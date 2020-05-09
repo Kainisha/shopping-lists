@@ -40,7 +40,7 @@ const App = () => {
             <PrivateRoute path="/list">
               <List />
             </PrivateRoute>
-            <PrivateRoute path="/create/:id">
+            <PrivateRoute path="/create/:id?">
               <Create />
             </PrivateRoute>
             <PrivateRoute to="/archived">
