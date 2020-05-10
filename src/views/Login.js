@@ -80,12 +80,19 @@ const Login = ({ loginAction, isFetching, isError }) => {
     <BackgroundStyled>
       <ModalStyled>
         <HeaderStyled>Login</HeaderStyled>
-        <TextInput label="Login" name="login" rowGap changeValue={handleChangeValue} />
+        <TextInput
+          label="Login"
+          name="login"
+          rowGap
+          changeValue={handleChangeValue}
+          autocomplete="username"
+        />
         <TextInput
           label="Password"
           name="password"
           rowGap
           password
+          autocomplete="current-password"
           changeValue={handleChangeValue}
         />
         <ErrorWrapperStyled>

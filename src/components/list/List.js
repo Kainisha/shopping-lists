@@ -158,7 +158,7 @@ const List = ({ name, items, done, id, updateAction }) => {
     <ListStyled>
       <IconButton
         className="button--done"
-        success={doneStatus}
+        success={doneStatus ? true : undefined}
         icon="done"
         onClick={handleSetDone}
       />
@@ -188,7 +188,7 @@ const List = ({ name, items, done, id, updateAction }) => {
               description={description}
               done={itemDone}
               clickItem={handleClickItem}
-              key={`list-item-${id}`}
+              key={`list-item-${itemId}`}
             />
           ))}
         </ItemsWrapperStyled>

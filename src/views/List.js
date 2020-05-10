@@ -13,9 +13,7 @@ const List = ({ getListsAction, shoppingLists }) => {
 
   return (
     <MainTemplate>
-      <>
-        <Wrapper lists={shoppingLists} />
-      </>
+      <Wrapper lists={shoppingLists} />
     </MainTemplate>
   );
 };
