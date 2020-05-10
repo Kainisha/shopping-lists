@@ -11,8 +11,8 @@ const IconButtonStyled = styled.button`
   background-color: ${({ theme }) => theme.mainColor};
   border: 1px solid ${({ theme }) => theme.mainColorHover};
   transition: background-color 300ms ease-in-out;
-  height: 2.2rem;
-  width: 2.2rem;
+  height: 2rem;
+  width: 2rem;
   box-shadow: 0 0 3px 2px lightgrey;
   display: flex;
   align-items: center;
@@ -30,8 +30,15 @@ const IconButtonStyled = styled.button`
     border-radius: 50%;
   }
 
+  ${({ sm }) =>
+    sm &&
+    css`
+      width: 1.5rem;
+      height: 1.5rem;
+    `}
+
   svg {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   &:hover {
@@ -71,15 +78,22 @@ const IconButtonLinkStyled = styled(Link)`
   background-color: ${({ theme }) => theme.mainColor};
   border: 1px solid ${({ theme }) => theme.mainColorHover};
   transition: background-color 300ms ease-in-out;
-  height: 2.2rem;
-  width: 2.2rem;
+  height: 2rem;
+  width: 2rem;
   box-shadow: 0 0 3px 2px lightgrey;
   display: flex;
   justify-content: center;
   align-items: center;
 
+  ${({ sm }) =>
+    sm &&
+    css`
+      width: 1.5rem;
+      height: 1.5rem;
+    `}
+
   svg {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 
   &::after {
@@ -102,7 +116,7 @@ const IconButtonLinkStyled = styled(Link)`
   }
 `;
 
-const IconButton = ({ icon, className, success, error, link, onClick, to }) => {
+const IconButton = ({ icon, className, success, error, link, onClick, to, sm }) => {
   const buttonIcon = () => {
     switch (icon) {
       case 'done': {
@@ -125,7 +139,7 @@ const IconButton = ({ icon, className, success, error, link, onClick, to }) => {
   return (
     <>
       {link ? (
-        <IconButtonLinkStyled className={className} to={to}>
+        <IconButtonLinkStyled className={className} to={to} sm={sm}>
           {buttonIcon()}
         </IconButtonLinkStyled>
       ) : (
@@ -135,6 +149,7 @@ const IconButton = ({ icon, className, success, error, link, onClick, to }) => {
           success={success}
           error={error}
           onClick={handleClick}
+          sm={sm}
         >
           {buttonIcon()}
         </IconButtonStyled>
@@ -151,6 +166,7 @@ IconButton.propTypes = {
   onClick: PropTypes.func,
   link: PropTypes.bool,
   to: PropTypes.string,
+  sm: PropTypes.bool,
 };
 
 IconButton.defaultProps = {
@@ -160,6 +176,7 @@ IconButton.defaultProps = {
   link: false,
   to: '',
   onClick: () => {},
+  sm: false,
 };
 
 export default IconButton;

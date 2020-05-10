@@ -83,7 +83,7 @@ const LabelSpanStyled = styled.span`
   color: gray;
 `;
 
-const Text = ({ name, label, rowGap, password, changeValue, initValue }) => {
+const Text = ({ name, label, rowGap, password, changeValue, initValue, autocomplete }) => {
   const [value, setValue] = useState(initValue);
 
   useEffect(() => {
@@ -100,7 +100,14 @@ const Text = ({ name, label, rowGap, password, changeValue, initValue }) => {
 
   return (
     <WrapperStyled rowGap={rowGap}>
-      <InputStyled type={inputType} value={value} name={name} required onChange={handleChange} />
+      <InputStyled
+        type={inputType}
+        value={value}
+        name={name}
+        required
+        onChange={handleChange}
+        autocomplete={autocomplete}
+      />
       <LabelStyled>
         <LabelSpanStyled>{label}</LabelSpanStyled>
       </LabelStyled>
@@ -115,12 +122,14 @@ Text.propTypes = {
   password: PropTypes.bool,
   changeValue: PropTypes.func.isRequired,
   initValue: PropTypes.string,
+  autocomplete: PropTypes.string,
 };
 
 Text.defaultProps = {
   rowGap: false,
   password: false,
   initValue: '',
+  autocomplete: 'off',
 };
 
 export default Text;

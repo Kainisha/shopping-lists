@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
@@ -11,7 +12,15 @@ import ErrorMessage from 'components/utilities/ErrorMessage';
 
 const FormWrapperStyled = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const FormStyled = styled.form``;
@@ -32,6 +41,7 @@ const Form = ({ isFetching, isError, createAction }) => {
   const [name, setName] = useState('');
   const [items, setItems] = useState([]);
   const { handleSubmit } = useForm();
+  const history = useHistory();
 
   const handleChange = ({ value }) => setName(value);
   const handleAddItem = () => {
@@ -53,6 +63,7 @@ const Form = ({ isFetching, isError, createAction }) => {
 
   const onSubmit = async () => {
     await createAction({ name, done: false, items });
+    history.push('/list');
   };
 
   return (
@@ -62,7 +73,6 @@ const Form = ({ isFetching, isError, createAction }) => {
         <FormStyled onSubmit={handleSubmit(onSubmit)}>
           <InputText name="name" label="Name" changeValue={handleChange} />
           <ButtonsWrapperStyled>
-            <Button text="Save" type="submit" success isFetching={isFetching} />
             <Button text="New item" type="button" onClick={handleAddItem} />
           </ButtonsWrapperStyled>
           <ItemsFormWrapperStyled>
@@ -76,6 +86,9 @@ const Form = ({ isFetching, isError, createAction }) => {
               />
             ))}
           </ItemsFormWrapperStyled>
+          <ButtonsWrapperStyled>
+            <Button text="Save" type="submit" success isFetching={isFetching} />
+          </ButtonsWrapperStyled>
         </FormStyled>
       </FormWrapperStyled>
     </>
