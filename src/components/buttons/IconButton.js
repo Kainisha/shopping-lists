@@ -41,6 +41,10 @@ const IconButtonStyled = styled.button`
     font-size: 1rem;
   }
 
+  &:disabled {
+    background-color: ${({ theme }) => theme.defaultColor};
+  }
+
   &:hover {
     background-color: ${({ theme }) => theme.mainColorHover};
 
@@ -96,6 +100,10 @@ const IconButtonLinkStyled = styled(Link)`
     font-size: 1rem;
   }
 
+  &:disabled {
+    background-color: ${({ theme }) => theme.defaultColor};
+  }
+
   &::after {
     content: '';
     opacity: 0;
@@ -116,7 +124,7 @@ const IconButtonLinkStyled = styled(Link)`
   }
 `;
 
-const IconButton = ({ icon, className, success, error, link, onClick, to, sm }) => {
+const IconButton = ({ icon, className, success, error, link, onClick, to, sm, disabled }) => {
   const buttonIcon = () => {
     switch (icon) {
       case 'done': {
@@ -139,7 +147,12 @@ const IconButton = ({ icon, className, success, error, link, onClick, to, sm }) 
   return (
     <>
       {link ? (
-        <IconButtonLinkStyled className={className} to={to} sm={sm}>
+        <IconButtonLinkStyled
+          className={className}
+          to={to}
+          sm={sm ? true : undefined}
+          disabled={disabled}
+        >
           {buttonIcon()}
         </IconButtonLinkStyled>
       ) : (
@@ -150,6 +163,7 @@ const IconButton = ({ icon, className, success, error, link, onClick, to, sm }) 
           error={error}
           onClick={handleClick}
           sm={sm}
+          disabled={disabled}
         >
           {buttonIcon()}
         </IconButtonStyled>
@@ -167,6 +181,7 @@ IconButton.propTypes = {
   link: PropTypes.bool,
   to: PropTypes.string,
   sm: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 IconButton.defaultProps = {
@@ -177,6 +192,7 @@ IconButton.defaultProps = {
   to: '',
   onClick: () => {},
   sm: false,
+  disabled: false,
 };
 
 export default IconButton;

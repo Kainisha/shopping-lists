@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
@@ -41,7 +40,6 @@ const Form = ({ isFetching, isError, createAction }) => {
   const [name, setName] = useState('');
   const [items, setItems] = useState([]);
   const { handleSubmit } = useForm();
-  const history = useHistory();
 
   const handleChange = ({ value }) => setName(value);
   const handleAddItem = () => {
@@ -63,7 +61,6 @@ const Form = ({ isFetching, isError, createAction }) => {
 
   const onSubmit = async () => {
     await createAction({ name, done: false, items });
-    history.push('/list');
   };
 
   return (

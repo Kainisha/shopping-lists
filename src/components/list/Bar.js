@@ -35,7 +35,7 @@ const BarStyled = styled.div`
 
 const Bar = ({ all, counter }) => {
   const computePercent = () => {
-    const percent = (counter / all) * 100;
+    const percent = Math.round((counter / all) * 100);
     return `${percent} %`;
   };
 

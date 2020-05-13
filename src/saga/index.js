@@ -242,7 +242,10 @@ function* createShoppingList({ payload: { name, done, items } }) {
 
     if (response.status !== 200) {
       yield put({ type: SET_ERROR, payload: true });
+      return;
     }
+
+    yield put(push('/list'));
   } catch (error) {
     yield put({ type: SET_ERROR, payload: true });
     yield put({ type: REQUEST, payload: false });

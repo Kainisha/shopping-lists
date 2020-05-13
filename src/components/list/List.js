@@ -151,8 +151,10 @@ const List = ({ name, items, done, id, updateAction }) => {
   const handleShowItems = () => setShowItems(!showItems);
   const handleSetDone = () => {
     setDoneStatus(!doneStatus);
-    updateAction({ id, name, done: doneStatus });
+    updateAction({ id, name, done: !doneStatus });
   };
+
+  const isCompleted = () => listItems.filter((item) => item.done).length === items.length;
 
   return (
     <ListStyled>
@@ -161,6 +163,7 @@ const List = ({ name, items, done, id, updateAction }) => {
         success={doneStatus ? true : undefined}
         icon="done"
         onClick={handleSetDone}
+        disabled={!isCompleted()}
       />
       <IconButton className="button--create" icon="create" link to={`/create/${id}`} />
       <InfoStyled onClick={handleShowItems}>
