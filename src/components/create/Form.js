@@ -10,6 +10,8 @@ import Button from 'components/buttons/Button';
 import ItemForm from 'components/create/ItemForm';
 import ErrorMessage from 'components/utilities/ErrorMessage';
 
+import { CREATE_LIST, GET_LISTS, UPDATE_ALL } from 'actions';
+
 const FormWrapperStyled = styled.div`
   display: grid;
   grid-template-columns: 1fr;
@@ -172,10 +174,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     createAction: ({ name, done, items }) =>
-      dispatch({ type: 'CREATE_LIST', payload: { name, done, items } }),
-    getListsAction: ({ filters, id }) => dispatch({ type: 'GET_LISTS', payload: { filters, id } }),
+      dispatch({ type: CREATE_LIST, payload: { name, done, items } }),
+    getListsAction: ({ filters, id }) => dispatch({ type: GET_LISTS, payload: { filters, id } }),
     updateAllAction: ({ id, name, newItems, deletedItems, changedItems }) =>
-      dispatch({ type: 'UPDATE_ALL', payload: { id, name, newItems, deletedItems, changedItems } }),
+      dispatch({ type: UPDATE_ALL, payload: { id, name, newItems, deletedItems, changedItems } }),
   };
 };
 

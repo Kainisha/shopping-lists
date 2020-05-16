@@ -216,6 +216,7 @@ const postList = async ({ token, userId, name, done, items }) => {
     user: userId,
     shopping_list_items: items,
   });
+
   const options = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -307,23 +308,25 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
   }
 
   try {
-    responses = yield all(
+    const responsesDelete = yield all(
       deletedItems.map((item) => {
         return call(deleteListItem, { token, id: item });
       }),
     );
+    responses = responses.concat(responsesDelete);
   } catch (error) {
     yield put({ type: SET_ERROR, payload: true });
     yield put({ type: REQUEST, payload: false });
   }
 
   try {
-    responses = yield all(
+    const responsesUpdate = yield all(
       changedItems.map((item) => {
         const { id: itemId, done, description } = item;
         return call(putListItem, { token, id: itemId, done, description });
       }),
     );
+    responses = responses.concat(responsesUpdate);
   } catch (error) {
     yield put({ type: SET_ERROR, payload: true });
     yield put({ type: REQUEST, payload: false });

@@ -4,6 +4,8 @@ import MainTemplate from 'layout/MainTemplate';
 import { connect } from 'react-redux';
 import Wrapper from 'components/list/Wrapper';
 
+import { GET_LISTS } from 'actions';
+
 const List = ({ getListsAction, shoppingLists }) => {
   useEffect(() => {
     const filters = new URLSearchParams();
@@ -38,7 +40,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getListsAction: ({ filters }) => dispatch({ type: 'GET_LISTS', payload: { filters } }),
+    getListsAction: ({ filters }) => dispatch({ type: GET_LISTS, payload: { filters } }),
   };
 };
 
