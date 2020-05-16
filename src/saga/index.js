@@ -11,11 +11,13 @@ import {
   SET_USER,
   SET_ERROR,
   SET_LISTS,
+  SET_LIST,
   GET_LISTS,
   UPDATE_LIST_ITEM,
   CREATE_LIST_ITEM,
   UPDATE_LIST,
   CREATE_LIST,
+  UPDATE_ALL,
 } from 'actions';
 
 const getToken = (state) => state.auth.token;
@@ -55,8 +57,10 @@ function* authorize({ payload: { login, password } }) {
   }
 }
 
-const fetchShoppingLists = async ({ token, filters }) => {
-  const response = await axios.get(`${url}/shopping-lists?${filters}`, {
+const fetchShoppingLists = async ({ token, filters, id = null }) => {
+  const computedUrl =
+    id === null ? `${url}/shopping-lists?${filters}` : `${url}/shopping-lists/${id}`;
+  const response = await axios.get(computedUrl, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -64,13 +68,13 @@ const fetchShoppingLists = async ({ token, filters }) => {
   return response;
 };
 
-function* getShoppingLists({ payload: { filters } }) {
+function* getShoppingLists({ payload: { filters, id = null } }) {
   yield put({ type: REQUEST, payload: true });
   yield put({ type: SET_ERROR, payload: false });
   const token = yield select(getToken);
 
   try {
-    const response = yield call(fetchShoppingLists, { token, filters });
+    const response = yield call(fetchShoppingLists, { token, filters, id });
     yield put({ type: REQUEST, payload: false });
 
     if (response.status !== 200) {
@@ -78,7 +82,16 @@ function* getShoppingLists({ payload: { filters } }) {
       return;
     }
 
-    yield put({ type: SET_LISTS, payload: response.data });
+    const { data } = response;
+
+    if (id === null) {
+      yield put({ type: SET_LISTS, payload: data });
+      yield put({ type: SET_LIST, payload: {} });
+      return;
+    }
+
+    yield put({ type: SET_LISTS, payload: [] });
+    yield put({ type: SET_LIST, payload: data });
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
     yield put({ type: SET_ERROR, payload: true });
@@ -113,8 +126,13 @@ function* updateShoppingListItem({ payload: { description, id, done } }) {
   }
 }
 
-const postListItem = async ({ token, description, done }) => {
-  const data = JSON.stringify({ description, done });
+const postListItem = async ({ token, description, done, listId = null }) => {
+  const data = { description, done };
+
+  if (listId !== null) {
+    data.shopping_list = listId;
+  }
+
   const options = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -122,7 +140,7 @@ const postListItem = async ({ token, description, done }) => {
     },
   };
 
-  const response = await axios.post(`${url}/shopping-list-items`, data, options);
+  const response = await axios.post(`${url}/shopping-list-items`, JSON.stringify(data), options);
   return response;
 };
 
@@ -144,8 +162,7 @@ function* createShoppingListItem({ payload: { description, done } }) {
   }
 }
 
-const putList = async ({ token, id, name, done }) => {
-  const data = JSON.stringify({ name, done });
+const deleteListItem = async ({ token, id }) => {
   const options = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -153,7 +170,25 @@ const putList = async ({ token, id, name, done }) => {
     },
   };
 
-  const response = await axios.put(`${url}/shopping-lists/${id}`, data, options);
+  const response = await axios.delete(`${url}/shopping-list-items/${id}`, options);
+  return response;
+};
+
+const putList = async ({ token, id, name, done, items = null }) => {
+  const data = { name, done };
+
+  if (items !== null && items.length !== 0) {
+    data.shopping_list_items = items;
+  }
+
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.put(`${url}/shopping-lists/${id}`, JSON.stringify(data), options);
   return response;
 };
 
@@ -252,6 +287,85 @@ function* createShoppingList({ payload: { name, done, items } }) {
   }
 }
 
+function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems } }) {
+  yield put({ type: SET_ERROR, payload: false });
+  yield put({ type: REQUEST, payload: true });
+
+  const token = yield select(getToken);
+  let responses = [];
+
+  try {
+    responses = yield all(
+      newItems.map((item) => {
+        const { description, done: itemDone } = item;
+        return call(postListItem, { token, description, done: itemDone, listId: id });
+      }),
+    );
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+
+  try {
+    responses = yield all(
+      deletedItems.map((item) => {
+        return call(deleteListItem, { token, id: item });
+      }),
+    );
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+
+  try {
+    responses = yield all(
+      changedItems.map((item) => {
+        const { id: itemId, done, description } = item;
+        return call(putListItem, { token, id: itemId, done, description });
+      }),
+    );
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+
+  const allRequests = newItems.length + deletedItems.length + changedItems.length;
+
+  if (responses.length !== allRequests) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+    return;
+  }
+
+  const hasErrors = responses.filter((response) => response.status !== 200).length > 0;
+
+  if (hasErrors) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+    return;
+  }
+
+  try {
+    const response = yield call(putList, {
+      name,
+      done: false,
+      token,
+      id,
+    });
+    yield put({ type: REQUEST, payload: false });
+
+    if (response.status !== 200) {
+      yield put({ type: SET_ERROR, payload: true });
+      return;
+    }
+
+    yield put(push('/list'));
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+}
+
 function* saga() {
   yield takeLatest(AUTH_REQUEST, authorize);
   yield takeLatest(GET_LISTS, getShoppingLists);
@@ -259,6 +373,7 @@ function* saga() {
   yield takeLatest(CREATE_LIST_ITEM, createShoppingListItem);
   yield takeLatest(UPDATE_LIST, updateShoppingList);
   yield takeLatest(CREATE_LIST, createShoppingList);
+  yield takeLatest(UPDATE_ALL, updateAll);
 }
 
 export default saga;

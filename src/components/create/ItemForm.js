@@ -19,9 +19,9 @@ const ItemFormStyled = styled.div`
   animation: ${opacity} 300ms linear forwards;
 `;
 
-const ItemForm = ({ onChange, onDelete, index, initValue }) => {
-  const handleChange = ({ value }) => onChange({ index, description: value });
-  const handleDelete = () => onDelete({ index });
+const ItemForm = ({ onChange, onDelete, id, initValue }) => {
+  const handleChange = ({ value }) => onChange({ id, description: value });
+  const handleDelete = () => onDelete({ id });
 
   return (
     <ItemFormStyled>
@@ -39,7 +39,7 @@ const ItemForm = ({ onChange, onDelete, index, initValue }) => {
 ItemForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   initValue: PropTypes.string,
 };
 

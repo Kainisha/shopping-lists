@@ -1,7 +1,8 @@
-import { SET_LISTS } from 'actions';
+import { SET_LISTS, SET_LIST } from 'actions';
 
 const initState = {
   lists: [],
+  list: {},
 };
 
 const ListReducer = (state = initState, { type, payload }) => {
@@ -10,6 +11,12 @@ const ListReducer = (state = initState, { type, payload }) => {
       return {
         ...state,
         lists: payload,
+      };
+    }
+    case SET_LIST: {
+      return {
+        ...state,
+        list: payload,
       };
     }
     default:
