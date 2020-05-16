@@ -1,14 +1,14 @@
 import React from 'react';
-// import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import MainTemplate from 'layout/MainTemplate';
 import Form from 'components/create/Form';
 
 const Create = () => {
-  // const { id } = useParams();
+  const { id } = useParams();
 
   return (
     <MainTemplate>
-      <Form />
+      <Form id={id} />
     </MainTemplate>
   );
 };

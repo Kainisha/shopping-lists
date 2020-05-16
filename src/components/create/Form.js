@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react/require-default-props */
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
@@ -8,6 +9,8 @@ import InputText from 'components/inputs/Text';
 import Button from 'components/buttons/Button';
 import ItemForm from 'components/create/ItemForm';
 import ErrorMessage from 'components/utilities/ErrorMessage';
+
+import { CREATE_LIST, GET_LISTS, UPDATE_ALL } from 'actions';
 
 const FormWrapperStyled = styled.div`
   display: grid;
@@ -36,31 +39,82 @@ const ItemsFormWrapperStyled = styled.div`
   grid-row-gap: 1rem;
 `;
 
-const Form = ({ isFetching, isError, createAction }) => {
+const Form = ({
+  id,
+  shoppingList,
+  isFetching,
+  isError,
+  createAction,
+  getListsAction,
+  updateAllAction,
+}) => {
   const [name, setName] = useState('');
   const [items, setItems] = useState([]);
   const { handleSubmit } = useForm();
+  const [deletedItems, setDeletedItems] = useState([]);
+
+  const isNew = () => id === null;
+
+  const getList = async () => {
+    // eslint-disable-next-line radix
+    if (shoppingList.id === parseInt(id)) {
+      return;
+    }
+    await getListsAction({ id, filters: '' });
+  };
+
+  useEffect(() => {
+    if (isNew()) {
+      return;
+    }
+
+    getList();
+
+    if (typeof shoppingList === 'undefined' || Object.keys(shoppingList).length === 0) {
+      return;
+    }
+
+    const { name: initName, shopping_list_items: initItems } = shoppingList;
+
+    setName(initName);
+    setItems(initItems);
+  }, [id, shoppingList]);
 
   const handleChange = ({ value }) => setName(value);
+
   const handleAddItem = () => {
     const newItem = { name: '', id: uuidv4(), done: false };
     setItems((prev) => [...prev, newItem]);
   };
-  const handleChangeItem = ({ index, description }) => {
+
+  const handleChangeItem = ({ id: itemId, description }) => {
     const temp = items;
-    const updatedItem = Object.assign(items[index], { description });
+    const index = temp.findIndex((item) => item.id === itemId);
+    const updatedItem = Object.assign(items[index], { description, changed: true });
     temp.splice(index, 1, updatedItem);
     setItems(temp);
   };
 
-  const handleDeleteItem = ({ index }) => {
+  const handleDeleteItem = ({ id: itemId }) => {
     const temp = items;
+    const index = items.findIndex((item) => item.id === itemId);
     temp.splice(index, 1);
     setItems([...temp]);
+    setDeletedItems((prev) => [...prev, itemId]);
   };
 
   const onSubmit = async () => {
-    await createAction({ name, done: false, items });
+    if (isNew()) {
+      await createAction({ name, done: false, items });
+      return;
+    }
+
+    const { shopping_list_items: initItems } = shoppingList;
+
+    const initItemsIds = initItems.map((item) => item.id);
+    const newItems = items.filter((item) => !initItemsIds.includes(item.id));
+    const changedItems = items.filter((item) => item.changed && initItemsIds.includes(item.id));
+    updateAllAction({ id, name, newItems, deletedItems, changedItems });
   };
 
   return (
@@ -68,18 +122,18 @@ const Form = ({ isFetching, isError, createAction }) => {
       {isError && <ErrorMessage text="Blad" />}
       <FormWrapperStyled>
         <FormStyled onSubmit={handleSubmit(onSubmit)}>
-          <InputText name="name" label="Name" changeValue={handleChange} />
+          <InputText name="name" label="Name" initValue={name} changeValue={handleChange} />
           <ButtonsWrapperStyled>
             <Button text="New item" type="button" onClick={handleAddItem} />
           </ButtonsWrapperStyled>
           <ItemsFormWrapperStyled>
-            {items.map(({ name: itemName, id: itemId }, index) => (
+            {items.map(({ description, id: itemId }) => (
               <ItemForm
-                index={index}
                 onChange={handleChangeItem}
                 onDelete={handleDeleteItem}
                 key={`form-item-${itemId}`}
-                initValue={itemName}
+                initValue={description}
+                id={itemId}
               />
             ))}
           </ItemsFormWrapperStyled>
@@ -96,26 +150,34 @@ Form.propTypes = {
   isFetching: PropTypes.bool,
   isError: PropTypes.bool,
   createAction: PropTypes.func.isRequired,
+  id: PropTypes.string,
+  getListsAction: PropTypes.func.isRequired,
+  updateAllAction: PropTypes.func.isRequired,
+  shoppingList: PropTypes.object,
 };
 
 Form.defaultProps = {
   isFetching: false,
   isError: false,
+  id: null,
+  shoppingList: {},
 };
 
 const mapStateToProps = (state) => {
   return {
     isFetching: state.auth.isFetching,
     isError: state.auth.isError,
+    shoppingList: state.shoppingLists.list,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     createAction: ({ name, done, items }) =>
-      dispatch({ type: 'CREATE_LIST', payload: { name, done, items } }),
-    createItemAction: ({ description, done, items }) =>
-      dispatch({ type: 'CREATE_LIST_ITEM', payload: { description, done, items } }),
+      dispatch({ type: CREATE_LIST, payload: { name, done, items } }),
+    getListsAction: ({ filters, id }) => dispatch({ type: GET_LISTS, payload: { filters, id } }),
+    updateAllAction: ({ id, name, newItems, deletedItems, changedItems }) =>
+      dispatch({ type: UPDATE_ALL, payload: { id, name, newItems, deletedItems, changedItems } }),
   };
 };
 
