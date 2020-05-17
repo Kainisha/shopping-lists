@@ -7,7 +7,7 @@ import ArrowIcon from '@material-ui/icons/PlayArrow';
 import Bar from 'components/list/Bar';
 import Item from 'components/list/items/Item';
 import IconButton from 'components/buttons/IconButton';
-import { UPDATE_LIST, SAVE_ARCHIVED } from 'actions';
+import { UPDATE_LIST, DELETE_LIST, SAVE_ARCHIVED } from 'actions';
 
 const ListStyled = styled.div`
   border-bottom: 1px solid lightgray;
@@ -20,15 +20,22 @@ const ListStyled = styled.div`
 
   .button__done {
     position: absolute;
-    right: 55px;
+    right: 105px;
     z-index: 1;
     top: -25px;
   }
 
-  .button__create,
+  .button__remove,
   .button__save {
-    position: absolute;
     right: 5px;
+    position: absolute;
+    z-index: 1;
+    top: -25px;
+  }
+
+  .button__create {
+    position: absolute;
+    right: 55px;
     z-index: 1;
     top: -25px;
   }
@@ -127,7 +134,16 @@ const ItemsWrapperStyled = styled.div`
     `}
 `;
 
-const List = ({ name, items, done, id, archived, updateAction, saveArchivedAction }) => {
+const List = ({
+  name,
+  items,
+  done,
+  id,
+  archived,
+  updateAction,
+  saveArchivedAction,
+  deleteAction,
+}) => {
   const initCounter = items.filter((item) => item.done).length;
   const [counter, setCounter] = useState(initCounter);
   const [listItems, setListItems] = useState(items);
@@ -156,6 +172,7 @@ const List = ({ name, items, done, id, archived, updateAction, saveArchivedActio
     updateAction({ id, name, done: !doneStatus });
   };
   const handleSave = () => saveArchivedAction({ name, items });
+  const handleDelete = () => deleteAction({ id });
 
   const isCompleted = () => listItems.filter((item) => item.done).length === items.length;
 
@@ -173,6 +190,7 @@ const List = ({ name, items, done, id, archived, updateAction, saveArchivedActio
             disabled={!isCompleted()}
           />
           <IconButton className="button__create" icon="create" link to={`/create/${id}`} />
+          <IconButton icon="remove" className="button__remove" error onClick={handleDelete} />
         </>
       )}
 
@@ -217,6 +235,7 @@ List.propTypes = {
   done: PropTypes.bool.isRequired,
   updateAction: PropTypes.func.isRequired,
   saveArchivedAction: PropTypes.func,
+  deleteAction: PropTypes.func.isRequired,
   archived: PropTypes.bool,
 };
 
@@ -231,6 +250,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({ type: UPDATE_LIST, payload: { id, done, name } }),
     saveArchivedAction: ({ name, items }) =>
       dispatch({ type: SAVE_ARCHIVED, payload: { name, items } }),
+    deleteAction: ({ id }) => dispatch({ type: DELETE_LIST, payload: { id } }),
   };
 };
 
