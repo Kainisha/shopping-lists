@@ -10,6 +10,7 @@ const List = ({ getListsAction, shoppingLists }) => {
   useEffect(() => {
     const filters = new URLSearchParams();
     filters.append('done', false);
+    filters.append('_sort', 'id:DESC');
     getListsAction({ filters: filters.toString() });
   }, []);
 
@@ -32,8 +33,6 @@ List.defaultProps = {
 
 const mapStateToProps = (state) => {
   return {
-    isFetching: state.auth.isFetching,
-    isError: state.auth.isError,
     shoppingLists: state.shoppingLists.lists,
   };
 };

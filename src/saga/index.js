@@ -18,6 +18,7 @@ import {
   UPDATE_LIST,
   CREATE_LIST,
   UPDATE_ALL,
+  SAVE_ARCHIVED,
 } from 'actions';
 
 const getToken = (state) => state.auth.token;
@@ -297,8 +298,7 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
 
   try {
     responses = yield all(
-      newItems.map((item) => {
-        const { description, done: itemDone } = item;
+      newItems.map(({ description, done: itemDone }) => {
         return call(postListItem, { token, description, done: itemDone, listId: id });
       }),
     );
@@ -321,8 +321,7 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
 
   try {
     const responsesUpdate = yield all(
-      changedItems.map((item) => {
-        const { id: itemId, done, description } = item;
+      changedItems.map(({ id: itemId, done, description }) => {
         return call(putListItem, { token, id: itemId, done, description });
       }),
     );
@@ -369,6 +368,65 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
   }
 }
 
+function* saveArchived({ payload: { name, items } }) {
+  yield put({ type: REQUEST, payload: true });
+  yield put({ type: SET_ERROR, payload: false });
+
+  const token = yield select(getToken);
+  const user = yield select(getUser);
+
+  let list = {};
+
+  try {
+    const response = yield call(postList, {
+      name,
+      done: false,
+      token,
+      userId: user.id,
+    });
+    yield put({ type: REQUEST, payload: false });
+
+    if (response.status !== 200) {
+      yield put({ type: SET_ERROR, payload: true });
+      return;
+    }
+
+    list = response.data;
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+
+  const { id } = list;
+  let responses = [];
+
+  try {
+    responses = yield all(
+      items.map(({ description }) => {
+        return call(postListItem, { token, description, done: false, listId: id });
+      }),
+    );
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+
+  if (responses.length === 0) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+    return;
+  }
+
+  const hasErrors = responses.filter((response) => response.status !== 200).length > 0;
+
+  if (!hasErrors) {
+    return;
+  }
+
+  yield put({ type: SET_ERROR, payload: true });
+  yield put({ type: REQUEST, payload: false });
+}
+
 function* saga() {
   yield takeLatest(AUTH_REQUEST, authorize);
   yield takeLatest(GET_LISTS, getShoppingLists);
@@ -377,6 +435,7 @@ function* saga() {
   yield takeLatest(UPDATE_LIST, updateShoppingList);
   yield takeLatest(CREATE_LIST, createShoppingList);
   yield takeLatest(UPDATE_ALL, updateAll);
+  yield takeLatest(SAVE_ARCHIVED, saveArchived);
 }
 
 export default saga;

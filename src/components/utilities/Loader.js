@@ -15,6 +15,15 @@ const rotate = keyframes`
 const LoaderStyled = styled.div`
   display: flex;
   justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.15);
+  position: absolute;
+  top: 0;
+  left: 0;
+  align-items: center;
 
   svg {
     animation: ${rotate} 1s linear infinite;

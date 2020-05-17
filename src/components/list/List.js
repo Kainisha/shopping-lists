@@ -7,6 +7,7 @@ import ArrowIcon from '@material-ui/icons/PlayArrow';
 import Bar from 'components/list/Bar';
 import Item from 'components/list/items/Item';
 import IconButton from 'components/buttons/IconButton';
+import { UPDATE_LIST, SAVE_ARCHIVED } from 'actions';
 
 const ListStyled = styled.div`
   border-bottom: 1px solid lightgray;
@@ -17,14 +18,15 @@ const ListStyled = styled.div`
   position: relative;
   outline: 0;
 
-  .button--done {
+  .button__done {
     position: absolute;
     right: 55px;
     z-index: 1;
     top: -25px;
   }
 
-  .button--create {
+  .button__create,
+  .button__save {
     position: absolute;
     right: 5px;
     z-index: 1;
@@ -125,7 +127,7 @@ const ItemsWrapperStyled = styled.div`
     `}
 `;
 
-const List = ({ name, items, done, id, updateAction }) => {
+const List = ({ name, items, done, id, archived, updateAction, saveArchivedAction }) => {
   const initCounter = items.filter((item) => item.done).length;
   const [counter, setCounter] = useState(initCounter);
   const [listItems, setListItems] = useState(items);
@@ -153,19 +155,27 @@ const List = ({ name, items, done, id, updateAction }) => {
     setDoneStatus(!doneStatus);
     updateAction({ id, name, done: !doneStatus });
   };
+  const handleSave = () => saveArchivedAction({ name, items });
 
   const isCompleted = () => listItems.filter((item) => item.done).length === items.length;
 
   return (
     <ListStyled>
-      <IconButton
-        className="button--done"
-        success={doneStatus ? true : undefined}
-        icon="done"
-        onClick={handleSetDone}
-        disabled={!isCompleted()}
-      />
-      <IconButton className="button--create" icon="create" link to={`/create/${id}`} />
+      {archived ? (
+        <IconButton className="button__save" icon="save" onClick={handleSave} />
+      ) : (
+        <>
+          <IconButton
+            className="button__done"
+            success={doneStatus ? true : undefined}
+            icon="done"
+            onClick={handleSetDone}
+            disabled={!isCompleted()}
+          />
+          <IconButton className="button__create" icon="create" link to={`/create/${id}`} />
+        </>
+      )}
+
       <InfoStyled onClick={handleShowItems}>
         <IconStyled>
           <IconWrapperStyled showItems={showItems}>
@@ -206,12 +216,21 @@ List.propTypes = {
   items: PropTypes.array.isRequired,
   done: PropTypes.bool.isRequired,
   updateAction: PropTypes.func.isRequired,
+  saveArchivedAction: PropTypes.func,
+  archived: PropTypes.bool,
+};
+
+List.defaultProps = {
+  archived: false,
+  saveArchivedAction: () => {},
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     updateAction: ({ id, done, name }) =>
-      dispatch({ type: 'UPDATE_LIST', payload: { id, done, name } }),
+      dispatch({ type: UPDATE_LIST, payload: { id, done, name } }),
+    saveArchivedAction: ({ name, items }) =>
+      dispatch({ type: SAVE_ARCHIVED, payload: { name, items } }),
   };
 };
 
