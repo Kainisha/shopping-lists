@@ -10,7 +10,7 @@ import IconButton from 'components/buttons/IconButton';
 import { UPDATE_LIST, DELETE_LIST, SAVE_ARCHIVED } from 'actions';
 
 const ListStyled = styled.div`
-  border-bottom: 1px solid lightgray;
+  border-bottom: 2px solid lightgray;
   padding: 1rem 0;
   margin: 1rem 0;
   display: grid;
@@ -20,7 +20,7 @@ const ListStyled = styled.div`
 
   .button__done {
     position: absolute;
-    right: 105px;
+    right: 80px;
     z-index: 1;
     top: -25px;
   }
@@ -35,7 +35,7 @@ const ListStyled = styled.div`
 
   .button__create {
     position: absolute;
-    right: 55px;
+    right: 40px;
     z-index: 1;
     top: -25px;
   }
@@ -103,10 +103,12 @@ const NameStyled = styled.div`
 
 const CounterStyled = styled.div`
   grid-area: counter;
+  color: gray;
 `;
 
 const BarStyled = styled.div`
   grid-area: bar;
+  color: gray;
 `;
 
 const opacity = keyframes`
@@ -179,7 +181,7 @@ const List = ({
   return (
     <ListStyled>
       {archived ? (
-        <IconButton className="button__save" icon="save" onClick={handleSave} />
+        <IconButton className="button__save" icon="save" onClick={handleSave} sm />
       ) : (
         <>
           <IconButton
@@ -188,9 +190,10 @@ const List = ({
             icon="done"
             onClick={handleSetDone}
             disabled={!isCompleted()}
+            sm
           />
-          <IconButton className="button__create" icon="create" link to={`/create/${id}`} />
-          <IconButton icon="remove" className="button__remove" error onClick={handleDelete} />
+          <IconButton className="button__create" icon="create" link to={`/create/${id}`} sm />
+          <IconButton icon="remove" className="button__remove" error onClick={handleDelete} sm />
         </>
       )}
 

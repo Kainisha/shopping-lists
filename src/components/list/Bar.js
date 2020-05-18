@@ -19,6 +19,7 @@ const SliderStyled = styled.div`
 const TextStyled = styled.div`
   display: flex;
   align-items: center;
+  color: gray;
 `;
 
 const BarStyled = styled.div`

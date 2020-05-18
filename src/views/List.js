@@ -32,7 +32,6 @@ List.defaultProps = {
 };
 
 const mapStateToProps = (state) => {
-  console.log('list changes');
   return {
     shoppingLists: state.shoppingLists.lists,
   };

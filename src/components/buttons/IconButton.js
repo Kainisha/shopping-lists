@@ -15,7 +15,7 @@ const IconButtonStyled = styled.button`
   transition: background-color 300ms ease-in-out;
   height: 2rem;
   width: 2rem;
-  box-shadow: 0 0 3px 2px lightgrey;
+  box-shadow: 0 1px 2px 1px lightgrey;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -24,7 +24,7 @@ const IconButtonStyled = styled.button`
   &::after {
     content: '';
     opacity: 0;
-    box-shadow: 0 0 3px 4px lightgrey;
+    box-shadow: 0 1px 2px 2px lightgrey;
     transition: opacity 300ms ease-in-out;
     position: absolute;
     height: 100%;
@@ -45,6 +45,7 @@ const IconButtonStyled = styled.button`
 
   &:disabled {
     background-color: ${({ theme }) => theme.defaultColor};
+    border-color: darkgray;
   }
 
   &:hover {
@@ -86,7 +87,7 @@ const IconButtonLinkStyled = styled(Link)`
   transition: background-color 300ms ease-in-out;
   height: 2rem;
   width: 2rem;
-  box-shadow: 0 0 3px 2px lightgrey;
+  box-shadow: 0 1px 2px 1px lightgrey;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -104,12 +105,13 @@ const IconButtonLinkStyled = styled(Link)`
 
   &:disabled {
     background-color: ${({ theme }) => theme.defaultColor};
+    border-color: darkgray;
   }
 
   &::after {
     content: '';
     opacity: 0;
-    box-shadow: 0 0 3px 4px lightgrey;
+    box-shadow: 0 1px 2px 2px lightgrey;
     transition: opacity 300ms ease-in-out;
     position: absolute;
     height: 100%;

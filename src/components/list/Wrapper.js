@@ -5,20 +5,16 @@ import { connect } from 'react-redux';
 import List from 'components/list/List';
 import Loader from 'components/utilities/Loader';
 import ErrorMessage from 'components/utilities/ErrorMessage';
-import Filter from 'components/archived/Filter';
 
 const WrapperStyled = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const Wrapper = ({ lists, isFetching, isError, archived, onFilter }) => {
-  const handleFilter = (filters) => onFilter(filters);
-
+const Wrapper = ({ lists, isFetching, isError, archived }) => {
   return (
     <>
       {isFetching && <Loader big />}
-      {archived && <Filter onFilter={handleFilter} />}
       <WrapperStyled>
         {lists.map(({ id, name, shopping_list_items: items, done }) => (
           <List
@@ -41,14 +37,12 @@ Wrapper.propTypes = {
   isFetching: PropTypes.bool,
   isError: PropTypes.bool,
   archived: PropTypes.bool,
-  onFilter: PropTypes.func,
 };
 
 Wrapper.defaultProps = {
   isFetching: false,
   isError: false,
   archived: false,
-  onFilter: () => {},
 };
 
 const mapStateToProps = (state) => {

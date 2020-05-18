@@ -117,6 +117,8 @@ const Form = ({
     updateAllAction({ id, name, newItems, deletedItems, changedItems });
   };
 
+  const disabledSubmit = () => items.length === 0;
+
   return (
     <>
       {isError && <ErrorMessage text="Blad" />}
@@ -138,7 +140,13 @@ const Form = ({
             ))}
           </ItemsFormWrapperStyled>
           <ButtonsWrapperStyled>
-            <Button text="Save" type="submit" success isFetching={isFetching} />
+            <Button
+              text="Save"
+              type="submit"
+              success
+              isFetching={isFetching}
+              disabled={disabledSubmit()}
+            />
           </ButtonsWrapperStyled>
         </FormStyled>
       </FormWrapperStyled>

@@ -6,7 +6,7 @@ import IconButton from 'components/buttons/IconButton';
 
 const FilterWrapperStyled = styled.div`
   padding: 1rem;
-  border: 1px solid lightgray;
+  border: 2px solid lightgray;
   display: flex;
   align-items: center;
   margin-bottom: 2rem;
@@ -15,9 +15,7 @@ const FilterWrapperStyled = styled.div`
 const Filter = ({ onFilter }) => {
   const [name, setName] = useState('');
 
-  const handleChangeValue = (value) => {
-    setName(value.value);
-  };
+  const handleChangeValue = (value) => setName(value.value);
 
   const handleFilter = () => {
     const filters = {
