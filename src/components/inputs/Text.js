@@ -6,6 +6,7 @@ const WrapperStyled = styled.div`
   position: relative;
   height: 40px;
   overflow: hidden;
+  width: 100%;
 
   ${({ rowGap }) =>
     rowGap &&

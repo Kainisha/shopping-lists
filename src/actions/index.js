@@ -9,7 +9,9 @@ export const UPDATE_LIST_ITEM = 'UPDATE_LIST_ITEM';
 export const CREATE_LIST_ITEM = 'CREATE_LIST_ITEM';
 export const UPDATE_LIST = 'UPDATE_LIST';
 export const CREATE_LIST = 'CREATE_LIST';
+export const DELETE_LIST = 'DELETE_LIST';
 export const UPDATE_ALL = 'UPDATE_ALL';
+export const SAVE_ARCHIVED = 'SAVE_ARCHIVED';
 
 export const authorize = (login, password) => ({
   type: AUTH_REQUEST,

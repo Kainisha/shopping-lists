@@ -5,6 +5,8 @@ import styled, { css } from 'styled-components';
 import DoneIcon from '@material-ui/icons/Done';
 import CreateIcon from '@material-ui/icons/Create';
 import RemoveIcon from '@material-ui/icons/Remove';
+import SaveIcon from '@material-ui/icons/Save';
+import SearchIcon from '@material-ui/icons/Search';
 
 const IconButtonStyled = styled.button`
   border-radius: 50%;
@@ -135,6 +137,12 @@ const IconButton = ({ icon, className, success, error, link, onClick, to, sm, di
       }
       case 'remove': {
         return <RemoveIcon />;
+      }
+      case 'save': {
+        return <SaveIcon />;
+      }
+      case 'search': {
+        return <SearchIcon />;
       }
       default: {
         return '';

@@ -17,7 +17,9 @@ import {
   CREATE_LIST_ITEM,
   UPDATE_LIST,
   CREATE_LIST,
+  DELETE_LIST,
   UPDATE_ALL,
+  SAVE_ARCHIVED,
 } from 'actions';
 
 const getToken = (state) => state.auth.token;
@@ -33,6 +35,111 @@ const fetchLogin = async ({ login, password }) => {
     password: hash.hex(),
   });
 
+  return response;
+};
+
+const fetchShoppingLists = async ({ token, filters, id = null }) => {
+  const computedUrl =
+    id === null ? `${url}/shopping-lists?${filters}` : `${url}/shopping-lists/${id}`;
+  const response = await axios.get(computedUrl, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response;
+};
+
+const postList = async ({ token, userId, name, done, items }) => {
+  const data = JSON.stringify({
+    name,
+    done,
+    created_on: format('yyyy-MM-dd hh:mm:ss'),
+    created_at: format('yyyy-MM-dd hh:mm:ss'),
+    user: userId,
+    shopping_list_items: items,
+  });
+
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.post(`${url}/shopping-lists`, data, options);
+  return response;
+};
+
+const putList = async ({ token, id, name, done, items = null }) => {
+  const data = { name, done };
+
+  if (items !== null && items.length !== 0) {
+    data.shopping_list_items = items;
+  }
+
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.put(`${url}/shopping-lists/${id}`, JSON.stringify(data), options);
+  return response;
+};
+
+const deleteList = async ({ token, id }) => {
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.delete(`${url}/shopping-lists/${id}`, options);
+  return response;
+};
+
+const putListItem = async ({ token, id, description, done }) => {
+  const data = JSON.stringify({ description, done });
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.put(`${url}/shopping-list-items/${id}`, data, options);
+  return response;
+};
+
+const postListItem = async ({ token, description, done, listId = null }) => {
+  const data = { description, done };
+
+  if (listId !== null) {
+    data.shopping_list = listId;
+  }
+
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.post(`${url}/shopping-list-items`, JSON.stringify(data), options);
+  return response;
+};
+
+const deleteListItem = async ({ token, id }) => {
+  const options = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const response = await axios.delete(`${url}/shopping-list-items/${id}`, options);
   return response;
 };
 
@@ -56,17 +163,6 @@ function* authorize({ payload: { login, password } }) {
     yield put({ type: SET_ERROR, payload: true });
   }
 }
-
-const fetchShoppingLists = async ({ token, filters, id = null }) => {
-  const computedUrl =
-    id === null ? `${url}/shopping-lists?${filters}` : `${url}/shopping-lists/${id}`;
-  const response = await axios.get(computedUrl, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response;
-};
 
 function* getShoppingLists({ payload: { filters, id = null } }) {
   yield put({ type: REQUEST, payload: true });
@@ -98,19 +194,6 @@ function* getShoppingLists({ payload: { filters, id = null } }) {
   }
 }
 
-const putListItem = async ({ token, id, description, done }) => {
-  const data = JSON.stringify({ description, done });
-  const options = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const response = await axios.put(`${url}/shopping-list-items/${id}`, data, options);
-  return response;
-};
-
 function* updateShoppingListItem({ payload: { description, id, done } }) {
   yield put({ type: SET_ERROR, payload: false });
   const token = yield select(getToken);
@@ -126,27 +209,10 @@ function* updateShoppingListItem({ payload: { description, id, done } }) {
   }
 }
 
-const postListItem = async ({ token, description, done, listId = null }) => {
-  const data = { description, done };
-
-  if (listId !== null) {
-    data.shopping_list = listId;
-  }
-
-  const options = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const response = await axios.post(`${url}/shopping-list-items`, JSON.stringify(data), options);
-  return response;
-};
-
 function* createShoppingListItem({ payload: { description, done } }) {
   yield put({ type: SET_ERROR, payload: false });
   yield put({ type: REQUEST, payload: true });
+
   const token = yield select(getToken);
 
   try {
@@ -162,36 +228,6 @@ function* createShoppingListItem({ payload: { description, done } }) {
   }
 }
 
-const deleteListItem = async ({ token, id }) => {
-  const options = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const response = await axios.delete(`${url}/shopping-list-items/${id}`, options);
-  return response;
-};
-
-const putList = async ({ token, id, name, done, items = null }) => {
-  const data = { name, done };
-
-  if (items !== null && items.length !== 0) {
-    data.shopping_list_items = items;
-  }
-
-  const options = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const response = await axios.put(`${url}/shopping-lists/${id}`, JSON.stringify(data), options);
-  return response;
-};
-
 function* updateShoppingList({ payload: { name, id, done } }) {
   yield put({ type: SET_ERROR, payload: false });
   const token = yield select(getToken);
@@ -206,27 +242,6 @@ function* updateShoppingList({ payload: { name, id, done } }) {
     yield put({ type: SET_ERROR, payload: true });
   }
 }
-
-const postList = async ({ token, userId, name, done, items }) => {
-  const data = JSON.stringify({
-    name,
-    done,
-    created_on: format('yyyy-MM-dd hh:mm:ss'),
-    created_at: format('yyyy-MM-dd hh:mm:ss'),
-    user: userId,
-    shopping_list_items: items,
-  });
-
-  const options = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const response = await axios.post(`${url}/shopping-lists`, data, options);
-  return response;
-};
 
 function* createShoppingList({ payload: { name, done, items } }) {
   yield put({ type: SET_ERROR, payload: false });
@@ -297,8 +312,7 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
 
   try {
     responses = yield all(
-      newItems.map((item) => {
-        const { description, done: itemDone } = item;
+      newItems.map(({ description, done: itemDone }) => {
         return call(postListItem, { token, description, done: itemDone, listId: id });
       }),
     );
@@ -321,8 +335,7 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
 
   try {
     const responsesUpdate = yield all(
-      changedItems.map((item) => {
-        const { id: itemId, done, description } = item;
+      changedItems.map(({ id: itemId, done, description }) => {
         return call(putListItem, { token, id: itemId, done, description });
       }),
     );
@@ -369,6 +382,99 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
   }
 }
 
+function* saveArchived({ payload: { name, items } }) {
+  yield put({ type: REQUEST, payload: true });
+  yield put({ type: SET_ERROR, payload: false });
+
+  const token = yield select(getToken);
+  const user = yield select(getUser);
+
+  let list = {};
+
+  try {
+    const response = yield call(postList, {
+      name,
+      done: false,
+      token,
+      userId: user.id,
+    });
+    yield put({ type: REQUEST, payload: false });
+
+    if (response.status !== 200) {
+      yield put({ type: SET_ERROR, payload: true });
+      return;
+    }
+
+    list = response.data;
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+
+  const { id } = list;
+  let responses = [];
+
+  try {
+    responses = yield all(
+      items.map(({ description }) => {
+        return call(postListItem, { token, description, done: false, listId: id });
+      }),
+    );
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+
+  if (responses.length === 0) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+    return;
+  }
+
+  const hasErrors = responses.filter((response) => response.status !== 200).length > 0;
+
+  if (!hasErrors) {
+    return;
+  }
+
+  yield put({ type: SET_ERROR, payload: true });
+  yield put({ type: REQUEST, payload: false });
+}
+
+function* deleteShoppingList({ payload: { id } }) {
+  yield put({ type: REQUEST, payload: true });
+  yield put({ type: SET_ERROR, payload: false });
+
+  const token = yield select(getToken);
+
+  try {
+    let response = yield call(deleteList, { id, token });
+
+    if (response.status !== 200) {
+      yield put({ type: REQUEST, payload: false });
+      yield put({ type: SET_ERROR, payload: true });
+      return;
+    }
+
+    const filtersParams = new URLSearchParams();
+    filtersParams.append('done', false);
+    filtersParams.append('_sort', 'id:DESC');
+
+    response = yield call(fetchShoppingLists, { token, filters: filtersParams.toString() });
+    yield put({ type: REQUEST, payload: false });
+
+    const { data } = response;
+
+    yield put({ type: SET_LISTS, payload: data });
+    yield put({ type: SET_LIST, payload: {} });
+
+    yield put(push('/list'));
+  } catch (error) {
+    yield put({ type: SET_ERROR, payload: true });
+    yield put({ type: REQUEST, payload: false });
+  }
+}
+
 function* saga() {
   yield takeLatest(AUTH_REQUEST, authorize);
   yield takeLatest(GET_LISTS, getShoppingLists);
@@ -376,7 +482,9 @@ function* saga() {
   yield takeLatest(CREATE_LIST_ITEM, createShoppingListItem);
   yield takeLatest(UPDATE_LIST, updateShoppingList);
   yield takeLatest(CREATE_LIST, createShoppingList);
+  yield takeLatest(DELETE_LIST, deleteShoppingList);
   yield takeLatest(UPDATE_ALL, updateAll);
+  yield takeLatest(SAVE_ARCHIVED, saveArchived);
 }
 
 export default saga;
