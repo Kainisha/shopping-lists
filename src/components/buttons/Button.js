@@ -22,6 +22,11 @@ const ButtonStyled = styled.button`
     background-color: ${({ theme }) => theme.mainColorHover};
   }
 
+  &:disabled {
+    background-color: lightgray;
+    border-color: darkgray;
+  }
+
   ${({ success }) =>
     success &&
     css`
@@ -105,7 +110,7 @@ const IconWrapper = styled.span`
   }
 `;
 
-const Button = ({ text, success, error, link, to, onClick, isFetching, icon, type }) => {
+const Button = ({ text, success, error, link, to, onClick, isFetching, icon, type, disabled }) => {
   const handleClick = () => onClick();
 
   const buttonIcon = () => {
@@ -139,6 +144,7 @@ const Button = ({ text, success, error, link, to, onClick, isFetching, icon, typ
           className=""
           error={error}
           success={success}
+          disabled={disabled}
         >
           {isFetching ? (
             <IconWrapper>
@@ -163,6 +169,7 @@ Button.propTypes = {
   isFetching: PropTypes.bool,
   icon: PropTypes.string,
   type: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
@@ -174,6 +181,7 @@ Button.defaultProps = {
   isFetching: false,
   icon: '',
   type: 'button',
+  disabled: false,
 };
 
 export default Button;

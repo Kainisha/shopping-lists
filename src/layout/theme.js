@@ -1,9 +1,9 @@
 export default {
-  mainColor: '#ebff00',
-  mainColorHover: '#cbcf00',
+  mainColor: '#ffe00b',
+  mainColorHover: '#ffc800',
   defaultColor: '#d6d6d6',
-  successColor: '#3eee00',
-  successColorHover: '#269200',
+  successColor: '#65f931',
+  successColorHover: '#30b700',
   errorColor: '#ff2e00',
   errorColorHover: '#9f0404',
 };

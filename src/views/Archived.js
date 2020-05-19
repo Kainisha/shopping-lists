@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import MainTemplate from 'layout/MainTemplate';
 import Wrapper from 'components/list/Wrapper';
+import Filter from 'components/archived/Filter';
 
 import { GET_LISTS } from 'actions';
 
@@ -33,7 +34,8 @@ const Archived = ({ getListsAction, shoppingLists }) => {
 
   return (
     <MainTemplate>
-      <Wrapper lists={shoppingLists} onFilter={handleFilter} archived />
+      <Filter onFilter={handleFilter} />
+      <Wrapper lists={shoppingLists} archived />
     </MainTemplate>
   );
 };

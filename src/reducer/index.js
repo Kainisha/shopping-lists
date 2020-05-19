@@ -10,6 +10,7 @@ const initState = {
   isLogged: false,
   isFetching: false,
   isError: false,
+  errorText: '',
 };
 
 const AuthReducer = (state = initState, { type, payload }) => {
@@ -29,9 +30,11 @@ const AuthReducer = (state = initState, { type, payload }) => {
       };
     }
     case SET_ERROR: {
+      const { isError, errorText } = payload;
       return {
         ...state,
-        isError: payload,
+        isError,
+        errorText,
       };
     }
     default:

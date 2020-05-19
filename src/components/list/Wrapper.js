@@ -5,20 +5,17 @@ import { connect } from 'react-redux';
 import List from 'components/list/List';
 import Loader from 'components/utilities/Loader';
 import ErrorMessage from 'components/utilities/ErrorMessage';
-import Filter from 'components/archived/Filter';
 
 const WrapperStyled = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const Wrapper = ({ lists, isFetching, isError, archived, onFilter }) => {
-  const handleFilter = (filters) => onFilter(filters);
-
+const Wrapper = ({ lists, isFetching, archived }) => {
   return (
     <>
       {isFetching && <Loader big />}
-      {archived && <Filter onFilter={handleFilter} />}
+      <ErrorMessage />
       <WrapperStyled>
         {lists.map(({ id, name, shopping_list_items: items, done }) => (
           <List
@@ -31,7 +28,6 @@ const Wrapper = ({ lists, isFetching, isError, archived, onFilter }) => {
           />
         ))}
       </WrapperStyled>
-      {isError && <ErrorMessage text="Error appeared during fething shopping lists" />}
     </>
   );
 };
@@ -39,16 +35,12 @@ const Wrapper = ({ lists, isFetching, isError, archived, onFilter }) => {
 Wrapper.propTypes = {
   lists: PropTypes.array.isRequired,
   isFetching: PropTypes.bool,
-  isError: PropTypes.bool,
   archived: PropTypes.bool,
-  onFilter: PropTypes.func,
 };
 
 Wrapper.defaultProps = {
   isFetching: false,
-  isError: false,
   archived: false,
-  onFilter: () => {},
 };
 
 const mapStateToProps = (state) => {
