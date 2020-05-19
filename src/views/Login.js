@@ -1,17 +1,11 @@
 import React, { useReducer } from 'react';
 import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import Button from 'components/buttons/Button';
 import TextInput from 'components/inputs/Text';
 import { connect } from 'react-redux';
 import { authorize } from 'actions';
 import ErrorMessage from 'components/utilities/ErrorMessage';
-
-const errorShow = keyframes`
-    to {
-        opacity: 1;
-    }
-`;
 
 const HeaderStyled = styled.h1`
   color: gray;
@@ -40,17 +34,6 @@ const ModalStyled = styled.div`
   justify-content: flex-start;
 `;
 
-const ErrorWrapperStyled = styled.div`
-  height: 45px;
-  margin: 1rem 0;
-`;
-
-const ErrorStyled = styled.div`
-  opacity: 0;
-  transform-origin: top;
-  animation: ${errorShow} 300ms linear forwards;
-`;
-
 const ButtonWrapperStyled = styled.div`
   display: flex;
   justify-content: center;
@@ -65,7 +48,7 @@ const initForm = {
   password: '',
 };
 
-const Login = ({ loginAction, isFetching, isError }) => {
+const Login = ({ loginAction, isFetching }) => {
   const [form, dispatch] = useReducer(formReducer, initForm);
 
   const handleChangeValue = ({ name, value }) => {
@@ -95,13 +78,7 @@ const Login = ({ loginAction, isFetching, isError }) => {
           autocomplete="current-password"
           changeValue={handleChangeValue}
         />
-        <ErrorWrapperStyled>
-          {isError && (
-            <ErrorStyled>
-              <ErrorMessage text="Invalid login or password" />
-            </ErrorStyled>
-          )}
-        </ErrorWrapperStyled>
+        <ErrorMessage height="45px" />
         <ButtonWrapperStyled>
           <Button text="Log in" isFetching={isFetching} onClick={handleLogin} />
         </ButtonWrapperStyled>
@@ -113,19 +90,16 @@ const Login = ({ loginAction, isFetching, isError }) => {
 Login.propTypes = {
   loginAction: PropTypes.func,
   isFetching: PropTypes.bool,
-  isError: PropTypes.bool,
 };
 
 Login.defaultProps = {
   loginAction: () => {},
   isFetching: false,
-  isError: false,
 };
 
 const mapStateToProps = (state) => {
   return {
     isFetching: state.auth.isFetching,
-    isError: state.auth.isError,
   };
 };
 

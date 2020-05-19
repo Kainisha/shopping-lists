@@ -11,10 +11,11 @@ const WrapperStyled = styled.div`
   flex-direction: column;
 `;
 
-const Wrapper = ({ lists, isFetching, isError, archived }) => {
+const Wrapper = ({ lists, isFetching, archived }) => {
   return (
     <>
       {isFetching && <Loader big />}
+      <ErrorMessage />
       <WrapperStyled>
         {lists.map(({ id, name, shopping_list_items: items, done }) => (
           <List
@@ -27,7 +28,6 @@ const Wrapper = ({ lists, isFetching, isError, archived }) => {
           />
         ))}
       </WrapperStyled>
-      {isError && <ErrorMessage text="Error appeared during fething shopping lists" />}
     </>
   );
 };
@@ -35,13 +35,11 @@ const Wrapper = ({ lists, isFetching, isError, archived }) => {
 Wrapper.propTypes = {
   lists: PropTypes.array.isRequired,
   isFetching: PropTypes.bool,
-  isError: PropTypes.bool,
   archived: PropTypes.bool,
 };
 
 Wrapper.defaultProps = {
   isFetching: false,
-  isError: false,
   archived: false,
 };
 

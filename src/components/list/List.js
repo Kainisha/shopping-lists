@@ -223,6 +223,7 @@ const List = ({
               done={itemDone}
               clickItem={handleClickItem}
               key={`list-item-${itemId}`}
+              archived={archived}
             />
           ))}
         </ItemsWrapperStyled>

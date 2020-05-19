@@ -28,8 +28,11 @@ const ItemStyled = styled.div`
   }
 `;
 
-const Item = ({ id, description, done, clickItem, updateAction }) => {
+const Item = ({ id, description, done, clickItem, updateAction, archived }) => {
   const handleClick = () => {
+    if (archived) {
+      return;
+    }
     clickItem(id);
     updateAction({ id, description, done: !done });
   };
@@ -47,6 +50,11 @@ Item.propTypes = {
   done: PropTypes.bool.isRequired,
   clickItem: PropTypes.func.isRequired,
   updateAction: PropTypes.func.isRequired,
+  archived: PropTypes.bool,
+};
+
+Item.defaultProps = {
+  archived: false,
 };
 
 const mapDispatchToProps = (dispatch) => {
