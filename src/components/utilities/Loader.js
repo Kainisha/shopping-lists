@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes, css } from 'styled-components';
 import CachedIcon from '@material-ui/icons/Cached';
+import { connect } from 'react-redux';
 
 const rotate = keyframes`
     from {
@@ -36,18 +37,30 @@ const LoaderStyled = styled.div`
   }
 `;
 
-const Loader = ({ big }) => (
-  <LoaderStyled big={big}>
-    <CachedIcon />
-  </LoaderStyled>
+const Loader = ({ big, isFetching }) => (
+  <>
+    {isFetching && (
+      <LoaderStyled big={big}>
+        <CachedIcon />
+      </LoaderStyled>
+    )}
+  </>
 );
 
 Loader.propTypes = {
   big: PropTypes.bool,
+  isFetching: PropTypes.bool,
 };
 
 Loader.defaultProps = {
   big: false,
+  isFetching: false,
 };
 
-export default Loader;
+const mapStateToProps = (state) => {
+  return {
+    isFetching: state.auth.isFetching,
+  };
+};
+
+export default connect(mapStateToProps)(Loader);

@@ -143,6 +143,11 @@ const deleteListItem = async ({ token, id }) => {
   return response;
 };
 
+const formatErrorText = (error) => {
+  const { statusCode, error: text } = error.response.data;
+  return `${statusCode}: ${text}`;
+};
+
 function* authorize({ payload: { login, password } }) {
   yield put({ type: REQUEST, payload: true });
   yield put({ type: SET_ERROR, payload: { isError: false, errorText: '' } });
@@ -165,7 +170,7 @@ function* authorize({ payload: { login, password } }) {
     yield put({ type: REQUEST, payload: false });
     yield put({
       type: SET_ERROR,
-      payload: { isError: true, errorText: 'An error occured during the request' },
+      payload: { isError: true, errorText: formatErrorText(error) },
     });
   }
 }
@@ -199,9 +204,7 @@ function* getShoppingLists({ payload: { filters, id = null } }) {
     yield put({ type: SET_LIST, payload: data });
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 }
 
@@ -221,9 +224,7 @@ function* updateShoppingListItem({ payload: { description, id, done } }) {
     }
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 }
 
@@ -244,9 +245,7 @@ function* createShoppingListItem({ payload: { description, done } }) {
       });
     }
   } catch (error) {
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
     yield put({ type: REQUEST, payload: false });
   }
 }
@@ -267,9 +266,7 @@ function* updateShoppingList({ payload: { name, id, done } }) {
     }
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 }
 
@@ -341,9 +338,7 @@ function* createShoppingList({ payload: { name, done, items } }) {
     yield put(push('/list'));
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 }
 
@@ -362,9 +357,7 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
     );
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 
   try {
@@ -376,9 +369,7 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
     responses = responses.concat(responsesDelete);
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 
   try {
@@ -437,9 +428,7 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
     yield put(push('/list'));
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 }
 
@@ -488,9 +477,7 @@ function* saveArchived({ payload: { name, items } }) {
     );
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 
   if (responses.length === 0) {
@@ -548,9 +535,7 @@ function* deleteShoppingList({ payload: { id } }) {
     yield put(push('/list'));
   } catch (error) {
     yield put({ type: REQUEST, payload: false });
-    const { statusCode, error: text } = error.response.data;
-    const errorText = `${statusCode}: ${text}`;
-    yield put({ type: SET_ERROR, payload: { isError: true, errorText } });
+    yield put({ type: SET_ERROR, payload: { isError: true, errorText: formatErrorText(error) } });
   }
 }
 

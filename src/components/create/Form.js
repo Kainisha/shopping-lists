@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import InputText from 'components/inputs/Text';
 import Button from 'components/buttons/Button';
 import ItemForm from 'components/create/ItemForm';
-import ErrorMessage from 'components/utilities/ErrorMessage';
 
 import { CREATE_LIST, GET_LISTS, UPDATE_ALL } from 'actions';
 
@@ -39,15 +38,7 @@ const ItemsFormWrapperStyled = styled.div`
   grid-row-gap: 1rem;
 `;
 
-const Form = ({
-  id,
-  shoppingList,
-  isFetching,
-  isError,
-  createAction,
-  getListsAction,
-  updateAllAction,
-}) => {
+const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, updateAllAction }) => {
   const [name, setName] = useState('');
   const [items, setItems] = useState([]);
   const { handleSubmit } = useForm();
@@ -121,7 +112,6 @@ const Form = ({
 
   return (
     <>
-      {isError && <ErrorMessage text="Blad" />}
       <FormWrapperStyled>
         <FormStyled onSubmit={handleSubmit(onSubmit)}>
           <InputText name="name" label="Name" initValue={name} changeValue={handleChange} />
@@ -156,7 +146,6 @@ const Form = ({
 
 Form.propTypes = {
   isFetching: PropTypes.bool,
-  isError: PropTypes.bool,
   createAction: PropTypes.func.isRequired,
   id: PropTypes.string,
   getListsAction: PropTypes.func.isRequired,
@@ -166,7 +155,6 @@ Form.propTypes = {
 
 Form.defaultProps = {
   isFetching: false,
-  isError: false,
   id: null,
   shoppingList: {},
 };
@@ -174,7 +162,6 @@ Form.defaultProps = {
 const mapStateToProps = (state) => {
   return {
     isFetching: state.auth.isFetching,
-    isError: state.auth.isError,
     shoppingList: state.shoppingLists.list,
   };
 };
