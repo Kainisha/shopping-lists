@@ -215,6 +215,7 @@ function* updateShoppingListItem({ payload: { description, id, done } }) {
 
   try {
     const response = yield call(putListItem, { description, id, done, token });
+    yield put({ type: REQUEST, payload: false });
 
     if (response.status !== 200) {
       yield put({
