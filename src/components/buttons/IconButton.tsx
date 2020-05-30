@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -8,7 +8,13 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import SaveIcon from '@material-ui/icons/Save';
 import SearchIcon from '@material-ui/icons/Search';
 
-const IconButtonStyled = styled.button`
+interface IconButton {
+  sm: boolean | undefined,
+  success: boolean | undefined,
+  error: boolean | undefined
+}
+
+const IconButtonStyled = styled.button<IconButton>`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.mainColor};
   border: 1px solid ${({ theme }) => theme.mainColorHover};
@@ -80,7 +86,13 @@ const IconButtonStyled = styled.button`
     `};
 `;
 
-const IconButtonLinkStyled = styled(Link)`
+interface IconButtonLink {
+  sm: boolean | undefined,
+  to: string,
+  disabled: boolean | undefined
+}
+
+const IconButtonLinkStyled = styled(Link)<IconButtonLink>`
   border-radius: 50%;
   background-color: ${({ theme }) => theme.mainColor};
   border: 1px solid ${({ theme }) => theme.mainColorHover};
@@ -128,7 +140,29 @@ const IconButtonLinkStyled = styled(Link)`
   }
 `;
 
-const IconButton = ({ icon, className, success, error, link, onClick, to, sm, disabled }) => {
+type Icon = 'done' | 'create' | 'remove' | 'save' | 'search'
+
+interface IconButtonProps extends IconButton {
+  icon: Icon
+  className?: string,
+  link?: string | undefined,
+  onClick: () => void,
+  to?: string | undefined,
+  disabled?: boolean
+}
+
+interface IconLinkProps extends IconButton {
+  icon: Icon,
+  className?: string,
+  link?: boolean | undefined,
+  onClick?: () => void,
+  to: string | undefined,
+  disabled?: boolean | undefined
+}
+
+type Props = IconButtonProps | IconLinkProps
+
+const IconButton: FunctionComponent<Props> = ({ icon, className, success, error, link, onClick, to, sm, disabled }) => {
   const buttonIcon = () => {
     switch (icon) {
       case 'done': {
@@ -152,11 +186,16 @@ const IconButton = ({ icon, className, success, error, link, onClick, to, sm, di
     }
   };
 
-  const handleClick = () => onClick();
+  const handleClick = () => {
+    if (!onClick) {
+      return
+    }
+    onClick();
+  }
 
   return (
     <>
-      {link ? (
+      {link && to ? (
         <IconButtonLinkStyled
           className={className}
           to={to}
@@ -183,7 +222,7 @@ const IconButton = ({ icon, className, success, error, link, onClick, to, sm, di
 };
 
 IconButton.propTypes = {
-  icon: PropTypes.string.isRequired,
+  icon: PropTypes.oneOf<Icon>(['done', 'create', 'remove', 'save', 'search']).isRequired,
   className: PropTypes.string,
   success: PropTypes.bool,
   error: PropTypes.bool,
