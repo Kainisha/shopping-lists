@@ -86,7 +86,7 @@ const Button: FunctionComponent<Props> = ({ text, success, error, onClick, isFet
           <CachedIcon />
         </IconWrapper>
       ) : (
-        <span>{Text}</span>
+        <span>{text}</span>
       )}
     </ButtonStyled>
   );
