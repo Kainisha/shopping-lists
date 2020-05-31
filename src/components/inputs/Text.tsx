@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
-const WrapperStyled = styled.div`
+interface Wrapper {
+  rowGap: boolean | undefined
+}
+
+const WrapperStyled = styled.div<Wrapper>`
   position: relative;
   height: 40px;
   overflow: hidden;
@@ -16,7 +20,11 @@ const WrapperStyled = styled.div`
     `}
 `;
 
-const InputStyled = styled.input`
+interface Input {
+  autocomplete: string | undefined
+}
+
+const InputStyled = styled.input<Input>`
   border-left: 0;
   border-right: 0;
   border-top: 0;
@@ -84,15 +92,29 @@ const LabelSpanStyled = styled.span`
   color: gray;
 `;
 
-const Text = ({ name, label, rowGap, password, changeValue, initValue, autocomplete }) => {
+type Props = {
+  name: string,
+  label: string,
+  rowGap: boolean | undefined,
+  password?: boolean | undefined,
+  changeValue: ({ name, value }: { name: string, value: string }) => void,
+  initValue?: string | undefined,
+  autocomplete: string | undefined
+}
+
+const Text: FunctionComponent<Props> = ({ name, label, rowGap, password, changeValue, initValue, autocomplete }) => {
   const [value, setValue] = useState(initValue);
 
   useEffect(() => {
     setValue(initValue);
   }, [initValue]);
 
-  const handleChange = (e) => {
-    const { value: targetValue } = e.target;
+  type Change = {
+    target: { value: string }
+  }
+
+  const handleChange = ({ target }: Change) => {
+    const { value: targetValue } = target;
     setValue(targetValue);
     changeValue({ name, value: targetValue });
   };

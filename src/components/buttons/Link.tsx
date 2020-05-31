@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import styled, {  keyframes } from 'styled-components';
+import styled from 'styled-components';
 import ListIcon from '@material-ui/icons/List';
 import ArchiveIcon from '@material-ui/icons/Archive';
 import NewIcon from '@material-ui/icons/AddCircleOutline';
@@ -48,21 +48,6 @@ const NavLinkStyled = styled(NavLink)`
     svg {
       margin-right: 10px;
     }
-  }
-`;
-
-const rotate = keyframes`
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(-360deg);
-    }
-`;
-
-const IconWrapper = styled.span`
-  svg {
-    animation: ${rotate} 1s linear infinite;
   }
 `;
 
