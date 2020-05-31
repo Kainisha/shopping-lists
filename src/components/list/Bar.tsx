@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
@@ -22,7 +22,12 @@ const TextStyled = styled.div`
   color: gray;
 `;
 
-const BarStyled = styled.div`
+interface Bar {
+  barWidth: number;
+  counter: number;
+}
+
+const BarStyled = styled.div<Bar>`
   position: absolute;
   top: 0;
   left: 0;
@@ -34,7 +39,12 @@ const BarStyled = styled.div`
   background: ${({ theme }) => theme.successColor};
 `;
 
-const Bar = ({ all, counter }) => {
+type Props = {
+  all: number;
+  counter: number;
+};
+
+const Bar: FunctionComponent<Props> = ({ all, counter }) => {
   const computePercent = () => {
     const percent = all !== 0 ? Math.round((counter / all) * 100) : 0;
     return `${percent} %`;

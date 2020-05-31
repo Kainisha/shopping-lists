@@ -9,9 +9,9 @@ import SaveIcon from '@material-ui/icons/Save';
 import SearchIcon from '@material-ui/icons/Search';
 
 interface IconButton {
-  sm: boolean | undefined,
-  success: boolean | undefined,
-  error: boolean | undefined
+  sm: number | undefined;
+  success: boolean | undefined;
+  error: boolean | undefined;
 }
 
 const IconButtonStyled = styled.button<IconButton>`
@@ -87,9 +87,9 @@ const IconButtonStyled = styled.button<IconButton>`
 `;
 
 interface IconButtonLink {
-  sm: boolean | undefined,
-  to: string,
-  disabled: boolean | undefined
+  sm: number | undefined;
+  to: string;
+  disabled: boolean | undefined;
 }
 
 const IconButtonLinkStyled = styled(Link)<IconButtonLink>`
@@ -140,29 +140,45 @@ const IconButtonLinkStyled = styled(Link)<IconButtonLink>`
   }
 `;
 
-type Icon = 'done' | 'create' | 'remove' | 'save' | 'search'
+type Icon = 'done' | 'create' | 'remove' | 'save' | 'search';
 
-interface IconButtonProps extends IconButton {
-  icon: Icon
-  className?: string,
-  link?: string | undefined,
-  onClick: () => void,
-  to?: string | undefined,
-  disabled?: boolean
+interface IconButtonProps {
+  sm: boolean | undefined;
+  success?: boolean | undefined;
+  error?: boolean | undefined;
+  icon: Icon;
+  className?: string;
+  link?: string | undefined;
+  onClick: () => void;
+  to?: string | undefined;
+  disabled?: boolean;
 }
 
-interface IconLinkProps extends IconButton {
-  icon: Icon,
-  className?: string,
-  link?: boolean | undefined,
-  onClick?: () => void,
-  to: string | undefined,
-  disabled?: boolean | undefined
+interface IconLinkProps {
+  sm: boolean | undefined;
+  success?: boolean | undefined;
+  error?: boolean | undefined;
+  icon: Icon;
+  className?: string;
+  link?: boolean | undefined;
+  onClick?: () => void;
+  to: string | undefined;
+  disabled?: boolean | undefined;
 }
 
-type Props = IconButtonProps | IconLinkProps
+type Props = IconButtonProps | IconLinkProps;
 
-const IconButton: FunctionComponent<Props> = ({ icon, className, success, error, link, onClick, to, sm, disabled }) => {
+const IconButton: FunctionComponent<Props> = ({
+  icon,
+  className,
+  success,
+  error,
+  link,
+  onClick,
+  to,
+  sm,
+  disabled,
+}) => {
   const buttonIcon = () => {
     switch (icon) {
       case 'done': {
@@ -188,10 +204,10 @@ const IconButton: FunctionComponent<Props> = ({ icon, className, success, error,
 
   const handleClick = () => {
     if (!onClick) {
-      return
+      return;
     }
     onClick();
-  }
+  };
 
   return (
     <>
@@ -199,7 +215,7 @@ const IconButton: FunctionComponent<Props> = ({ icon, className, success, error,
         <IconButtonLinkStyled
           className={className}
           to={to}
-          sm={sm ? true : undefined}
+          sm={sm ? 1 : undefined}
           disabled={disabled}
         >
           {buttonIcon()}
@@ -211,7 +227,7 @@ const IconButton: FunctionComponent<Props> = ({ icon, className, success, error,
           success={success}
           error={error}
           onClick={handleClick}
-          sm={sm}
+          sm={sm ? 1 : undefined}
           disabled={disabled}
         >
           {buttonIcon()}
@@ -239,7 +255,7 @@ IconButton.defaultProps = {
   error: false,
   link: false,
   to: '',
-  onClick: () => {},
+  onClick: () => null,
   sm: false,
   disabled: false,
 };
