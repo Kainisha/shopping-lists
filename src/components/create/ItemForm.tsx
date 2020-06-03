@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 import TextInput from 'components/inputs/Text';
@@ -19,8 +19,24 @@ const ItemFormStyled = styled.div`
   animation: ${opacity} 300ms linear forwards;
 `;
 
-const ItemForm = ({ onChange, onDelete, id, initValue }) => {
-  const handleChange = ({ value }) => onChange({ id, description: value });
+interface OnChange {
+  id: string;
+  description: string;
+}
+
+interface OnDelete {
+  id: string;
+}
+
+type ItemFormProps = {
+  onChange: ({ id, description }: OnChange) => void;
+  onDelete: ({ id }: OnDelete) => void;
+  id: string;
+  initValue: string | undefined;
+};
+
+const ItemForm: FunctionComponent<ItemFormProps> = ({ onChange, onDelete, id, initValue }) => {
+  const handleChange = ({ value }: { value: string }) => onChange({ id, description: value });
   const handleDelete = () => onDelete({ id });
 
   return (
@@ -39,7 +55,7 @@ const ItemForm = ({ onChange, onDelete, id, initValue }) => {
 ItemForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  id: PropTypes.oneOfType([PropTypes.string]).isRequired,
   initValue: PropTypes.string,
 };
 

@@ -7,20 +7,28 @@ import Wrapper from 'components/list/Wrapper';
 
 import { GET_LISTS } from 'actions';
 
-interface ShoppingList {
-  name: string,
-  id: number,
-  done: boolean
+interface Item {
+  id: number;
+  description: string;
+  done: boolean;
+}
+
+interface List {
+  name: string;
+  id: number;
+  done: boolean;
+  // eslint-disable-next-line camelcase
+  shopping_list_items: Array<Item>;
 }
 
 type GetListsAction = {
-  filters: string
-}
+  filters: string;
+};
 
 type Props = {
-  getListsAction: ({ filters }: GetListsAction ) => void,
-  shoppingLists: Array<ShoppingList>
-}
+  getListsAction: ({ filters }: GetListsAction) => void;
+  shoppingLists: Array<List>;
+};
 
 const List: FunctionComponent<Props> = ({ getListsAction, shoppingLists }) => {
   useEffect(() => {
@@ -43,8 +51,8 @@ List.propTypes = {
 };
 
 type MapState = {
-  shoppingLists: { lists: Array<ShoppingList> }
-}
+  shoppingLists: { lists: Array<List> };
+};
 
 const mapStateToProps = (state: MapState) => {
   return {
@@ -54,7 +62,8 @@ const mapStateToProps = (state: MapState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    getListsAction: ({ filters }: GetListsAction) => dispatch({ type: GET_LISTS, payload: { filters } }),
+    getListsAction: ({ filters }: GetListsAction) =>
+      dispatch({ type: GET_LISTS, payload: { filters } }),
   };
 };
 

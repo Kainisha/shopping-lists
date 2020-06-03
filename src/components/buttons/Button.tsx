@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import styled, { css, keyframes } from 'styled-components';
 import CachedIcon from '@material-ui/icons/Cached';
 
-interface ButtonProps {
-  success: boolean | undefined,
-  error: boolean | undefined,
+interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
+  success: boolean | undefined;
+  error: boolean | undefined;
 }
 
 const ButtonStyled = styled.button<ButtonProps>`
@@ -67,28 +67,64 @@ const IconWrapper = styled.span`
 `;
 
 type Props = {
-  text: string,
-  success?: boolean,
-  error?: boolean,
-  onClick: () => void,
-  isFetching?: boolean,
-  icon?: string,
-  disabled?: boolean,
-}
+  text: string;
+  success?: boolean | undefined;
+  error?: boolean | undefined;
+  onClick: () => void;
+  isFetching?: boolean | undefined;
+  disabled?: boolean;
+  submit?: boolean | undefined;
+};
 
-const Button: FunctionComponent<Props> = ({ text, success, error, onClick, isFetching, disabled }) => {
+const Button: FunctionComponent<Props> = ({
+  text,
+  success,
+  error,
+  onClick,
+  isFetching,
+  disabled,
+  submit,
+}) => {
   const handleClick = () => onClick();
 
   return (
-    <ButtonStyled onClick={handleClick} className="" error={error} success={success} disabled={disabled} type="button">
-      {isFetching ? (
-        <IconWrapper>
-          <CachedIcon />
-        </IconWrapper>
+    <>
+      {submit ? (
+        <ButtonStyled
+          onClick={handleClick}
+          className=""
+          error={error}
+          success={success}
+          disabled={disabled}
+          type="submit"
+        >
+          {isFetching ? (
+            <IconWrapper>
+              <CachedIcon />
+            </IconWrapper>
+          ) : (
+            <span>{text}</span>
+          )}
+        </ButtonStyled>
       ) : (
-        <span>{text}</span>
+        <ButtonStyled
+          onClick={handleClick}
+          className=""
+          error={error}
+          success={success}
+          disabled={disabled}
+          type="button"
+        >
+          {isFetching ? (
+            <IconWrapper>
+              <CachedIcon />
+            </IconWrapper>
+          ) : (
+            <span>{text}</span>
+          )}
+        </ButtonStyled>
       )}
-    </ButtonStyled>
+    </>
   );
 };
 
@@ -99,6 +135,7 @@ Button.propTypes = {
   onClick: PropTypes.func.isRequired,
   isFetching: PropTypes.bool,
   disabled: PropTypes.bool,
+  submit: PropTypes.bool,
 };
 
 Button.defaultProps = {
@@ -106,6 +143,7 @@ Button.defaultProps = {
   error: false,
   isFetching: false,
   disabled: false,
+  submit: false,
 };
 
 export default Button;

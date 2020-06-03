@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 
 interface Wrapper {
-  rowGap: boolean | undefined
+  rowGap: boolean | undefined;
 }
 
 const WrapperStyled = styled.div<Wrapper>`
@@ -21,7 +21,7 @@ const WrapperStyled = styled.div<Wrapper>`
 `;
 
 interface Input {
-  autocomplete: string | undefined
+  autocomplete: string | undefined;
 }
 
 const InputStyled = styled.input<Input>`
@@ -93,16 +93,24 @@ const LabelSpanStyled = styled.span`
 `;
 
 type Props = {
-  name: string,
-  label: string,
-  rowGap: boolean | undefined,
-  password?: boolean | undefined,
-  changeValue: ({ name, value }: { name: string, value: string }) => void,
-  initValue?: string | undefined,
-  autocomplete: string | undefined
-}
+  name: string;
+  label: string;
+  rowGap?: boolean | undefined;
+  password?: boolean | undefined;
+  changeValue: ({ name, value }: { name: string; value: string }) => void;
+  initValue?: string | undefined;
+  autocomplete?: string | undefined;
+};
 
-const Text: FunctionComponent<Props> = ({ name, label, rowGap, password, changeValue, initValue, autocomplete }) => {
+const Text: FunctionComponent<Props> = ({
+  name,
+  label,
+  rowGap,
+  password,
+  changeValue,
+  initValue,
+  autocomplete,
+}) => {
   const [value, setValue] = useState(initValue);
 
   useEffect(() => {
@@ -110,8 +118,8 @@ const Text: FunctionComponent<Props> = ({ name, label, rowGap, password, changeV
   }, [initValue]);
 
   type Change = {
-    target: { value: string }
-  }
+    target: { value: string };
+  };
 
   const handleChange = ({ target }: Change) => {
     const { value: targetValue } = target;

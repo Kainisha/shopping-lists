@@ -26,7 +26,7 @@ interface List {
 
 type WrapperProps = {
   lists: Array<List>;
-  archived: boolean | undefined;
+  archived?: boolean | undefined;
 };
 
 const Wrapper: FunctionComponent<WrapperProps> = ({ lists, archived }) => {
