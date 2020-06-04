@@ -39,7 +39,7 @@ const Archived: FunctionComponent<ArchivedProps> = ({ getListsAction, shoppingLi
     getListsAction({ filters: filtersParams.toString() });
   }, []);
 
-  const handleFilter = (filters: string) => {
+  const handleFilter = (filters: { name: string }) => {
     const filtersParams = new URLSearchParams();
     filtersParams.append('done', 'true');
     filtersParams.append('_sort', 'id:DESC');

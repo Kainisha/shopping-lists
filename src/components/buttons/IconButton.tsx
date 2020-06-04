@@ -155,14 +155,14 @@ interface IconButtonProps {
 }
 
 interface IconLinkProps {
-  sm: boolean | undefined;
+  sm?: boolean | undefined;
   success?: boolean | undefined;
   error?: boolean | undefined;
   icon: Icon;
   className?: string;
   link?: boolean | undefined;
   onClick?: () => void;
-  to: string | undefined;
+  to?: string | undefined;
   disabled?: boolean | undefined;
 }
 

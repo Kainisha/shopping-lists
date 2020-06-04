@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import TextInput from 'components/inputs/Text';
@@ -12,10 +12,18 @@ const FilterWrapperStyled = styled.div`
   margin-bottom: 2rem;
 `;
 
-const Filter = ({ onFilter }) => {
+interface OnFilter {
+  name: string;
+}
+
+interface FilterProps {
+  onFilter: ({ name }: OnFilter) => void;
+}
+
+const Filter: FunctionComponent<FilterProps> = ({ onFilter }) => {
   const [name, setName] = useState('');
 
-  const handleChangeValue = (value) => setName(value.value);
+  const handleChangeValue = (input: { value: string }) => setName(input.value);
 
   const handleFilter = () => {
     const filters = {

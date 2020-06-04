@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes } from 'styled-components';
 import ErrorIcon from '@material-ui/icons/Error';
@@ -10,7 +10,11 @@ const errorShow = keyframes`
     }
 `;
 
-const ErrorWrapperStyled = styled.div`
+interface ErrorWrapper {
+  height: string | undefined;
+}
+
+const ErrorWrapperStyled = styled.div<ErrorWrapper>`
   height: ${({ height }) => height};
   margin: 1rem 0;
 `;
@@ -38,7 +42,13 @@ const TextStyled = styled.span`
   margin-left: 10px;
 `;
 
-const ErrorMessage = ({ errorText, isError, height }) => (
+interface ErrorMessageProps {
+  errorText: string;
+  isError: boolean;
+  height?: string | undefined;
+}
+
+const ErrorMessage: FunctionComponent<ErrorMessageProps> = ({ errorText, isError, height }) => (
   <ErrorWrapperStyled height={height}>
     {isError && (
       <ErrorMessageStyled>
@@ -50,18 +60,23 @@ const ErrorMessage = ({ errorText, isError, height }) => (
 );
 
 ErrorMessage.propTypes = {
-  errorText: PropTypes.string,
-  isError: PropTypes.bool,
+  errorText: PropTypes.string.isRequired,
+  isError: PropTypes.bool.isRequired,
   height: PropTypes.string,
 };
 
 ErrorMessage.defaultProps = {
-  errorText: '',
-  isError: false,
   height: 'auto',
 };
 
-const mapStateToProps = (state) => {
+interface MapStateToProps {
+  auth: {
+    isError: boolean;
+    errorText: string;
+  };
+}
+
+const mapStateToProps = (state: MapStateToProps) => {
   return {
     isError: state.auth.isError,
     errorText: state.auth.errorText,
