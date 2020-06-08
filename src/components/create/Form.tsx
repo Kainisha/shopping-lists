@@ -9,7 +9,11 @@ import InputText from 'components/inputs/Text';
 import Button from 'components/buttons/Button';
 import ItemForm from 'components/create/ItemForm';
 
-import { CREATE_LIST, GET_LISTS, UPDATE_ALL } from 'actions';
+import {
+  createList as createListAction,
+  getLists as getListsAction,
+  updateAll as updateAllAction,
+} from 'actions';
 
 const FormWrapperStyled = styled.div`
   display: grid;
@@ -53,18 +57,18 @@ interface List {
   done: boolean;
 }
 
-interface GetListsAction {
+interface GetLists {
   id: string;
   filters: string;
 }
 
-interface CreateAction {
+interface CreateList {
   name: string;
   done: boolean;
   items: Array<Item>;
 }
 
-interface UpdateAllAction {
+interface UpdateAll {
   id: string | null;
   name: string;
   newItems: Item[];
@@ -76,9 +80,9 @@ type FormProps = {
   id: string | null;
   shoppingList: List | undefined;
   isFetching: boolean | undefined;
-  createAction: ({ name, done, items }: CreateAction) => void;
-  getListsAction: ({ id, filters }: GetListsAction) => void;
-  updateAllAction: ({ id, name, newItems, deletedItems, changedItems }: UpdateAllAction) => void;
+  createList: ({ name, done, items }: CreateList) => void;
+  getLists: ({ id, filters }: GetLists) => void;
+  updateAll: ({ id, name, newItems, deletedItems, changedItems }: UpdateAll) => void;
 };
 
 type HandleChangeItem = {
@@ -94,9 +98,9 @@ const Form: FunctionComponent<FormProps> = ({
   id,
   shoppingList,
   isFetching,
-  createAction,
-  getListsAction,
-  updateAllAction,
+  createList,
+  getLists,
+  updateAll,
 }) => {
   const [name, setName] = useState('');
   const [items, setItems] = useState<Item[]>([]);
@@ -110,7 +114,7 @@ const Form: FunctionComponent<FormProps> = ({
     if (id === null || !shoppingList || shoppingList.id === parseInt(id)) {
       return;
     }
-    getListsAction({ id, filters: '' });
+    getLists({ id, filters: '' });
   };
 
   useEffect(() => {
@@ -155,7 +159,7 @@ const Form: FunctionComponent<FormProps> = ({
 
   const onSubmit = async () => {
     if (isNew()) {
-      createAction({ name, done: false, items });
+      createList({ name, done: false, items });
       return;
     }
 
@@ -168,7 +172,7 @@ const Form: FunctionComponent<FormProps> = ({
     const initItemsIds = initItems.map((item) => item.id);
     const newItems = items.filter((item) => !initItemsIds.includes(item.id));
     const changedItems = items.filter((item) => item.changed && initItemsIds.includes(item.id));
-    updateAllAction({ id, name, newItems, deletedItems, changedItems });
+    updateAll({ id, name, newItems, deletedItems, changedItems });
   };
 
   const disabledSubmit = () => items.length === 0;
@@ -222,12 +226,11 @@ const mapStateToProps = (state: MapStateToProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    createAction: ({ name, done, items }: CreateAction) =>
-      dispatch({ type: CREATE_LIST, payload: { name, done, items } }),
-    getListsAction: ({ filters, id }: GetListsAction) =>
-      dispatch({ type: GET_LISTS, payload: { filters, id } }),
-    updateAllAction: ({ id, name, newItems, deletedItems, changedItems }: UpdateAllAction) =>
-      dispatch({ type: UPDATE_ALL, payload: { id, name, newItems, deletedItems, changedItems } }),
+    createList: ({ name, done, items }: CreateList) =>
+      dispatch(createListAction({ name, done, items })),
+    getLists: ({ filters, id }: GetLists) => dispatch(getListsAction({ filters, id })),
+    updateAll: ({ id, name, newItems, deletedItems, changedItems }: UpdateAll) =>
+      dispatch(updateAllAction({ id, name, newItems, deletedItems, changedItems })),
   };
 };
 

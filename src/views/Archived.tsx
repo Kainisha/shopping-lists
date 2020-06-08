@@ -6,7 +6,7 @@ import MainTemplate from 'layout/MainTemplate';
 import Wrapper from 'components/list/Wrapper';
 import Filter from 'components/archived/Filter';
 
-import { GET_LISTS } from 'actions';
+import { getLists } from 'actions';
 
 interface Item {
   id: number;
@@ -81,8 +81,7 @@ const mapStateToProps = (state: MapStateToProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    getListsAction: ({ filters }: GetListsAction) =>
-      dispatch({ type: GET_LISTS, payload: { filters } }),
+    getListsAction: ({ filters }: GetListsAction) => dispatch(getLists({ filters })),
   };
 };
 

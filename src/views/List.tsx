@@ -5,7 +5,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import Wrapper from 'components/list/Wrapper';
 
-import { GET_LISTS } from 'actions';
+import { getLists as getListsAction } from 'actions';
 
 interface Item {
   id: number;
@@ -21,21 +21,21 @@ interface List {
   shopping_list_items: Array<Item>;
 }
 
-type GetListsAction = {
+type GetLists = {
   filters: string;
 };
 
 type Props = {
-  getListsAction: ({ filters }: GetListsAction) => void;
+  getLists: ({ filters }: GetLists) => void;
   shoppingLists: Array<List>;
 };
 
-const List: FunctionComponent<Props> = ({ getListsAction, shoppingLists }) => {
+const List: FunctionComponent<Props> = ({ getLists, shoppingLists }) => {
   useEffect(() => {
     const filters = new URLSearchParams();
     filters.append('done', 'false');
     filters.append('_sort', 'id:DESC');
-    getListsAction({ filters: filters.toString() });
+    getLists({ filters: filters.toString() });
   }, []);
 
   return (
@@ -46,7 +46,7 @@ const List: FunctionComponent<Props> = ({ getListsAction, shoppingLists }) => {
 };
 
 List.propTypes = {
-  getListsAction: PropTypes.func.isRequired,
+  getLists: PropTypes.func.isRequired,
   shoppingLists: PropTypes.array.isRequired,
 };
 
@@ -62,8 +62,7 @@ const mapStateToProps = (state: MapState) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    getListsAction: ({ filters }: GetListsAction) =>
-      dispatch({ type: GET_LISTS, payload: { filters } }),
+    getLists: ({ filters }: GetLists) => dispatch(getListsAction({ filters })),
   };
 };
 
