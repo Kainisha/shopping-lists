@@ -37,9 +37,9 @@ interface GetLists {
   };
 }
 
-export const getLists: GetLists = ({ filters }) => ({
+export const getLists: GetLists = ({ filters, id }) => ({
   type: GET_LISTS,
-  payload: { filters },
+  payload: { filters, id },
 });
 
 interface Item {

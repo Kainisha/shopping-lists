@@ -58,8 +58,10 @@ const Archived: FunctionComponent<ArchivedProps> = ({ getListsAction, shoppingLi
 
   return (
     <MainTemplate>
-      <Filter onFilter={handleFilter} />
-      <Wrapper lists={shoppingLists} archived />
+      <>
+        <Filter onFilter={handleFilter} />
+        <Wrapper lists={shoppingLists} archived />
+      </>
     </MainTemplate>
   );
 };

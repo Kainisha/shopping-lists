@@ -85,7 +85,7 @@ interface FormProps {
   updateAll: ({ id, name, newItems, deletedItems, changedItems }: UpdateAll) => void;
 }
 
-interface HandleChangeIte {
+interface HandleChangeItem {
   id: string;
   description: string;
 }
@@ -107,13 +107,14 @@ const Form: FunctionComponent<FormProps> = ({
   const { handleSubmit } = useForm();
   const [deletedItems, setDeletedItems] = useState<string[]>([]);
 
-  const isNew = () => id === null;
+  const isNew = () => !id;
 
   const getList = () => {
     // eslint-disable-next-line radix
-    if (id === null || !shoppingList || shoppingList.id === parseInt(id)) {
+    if (!id || !shoppingList || shoppingList.id === parseInt(id)) {
       return;
     }
+    console.log(id);
     getLists({ id, filters: '' });
   };
 

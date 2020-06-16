@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode, ReactNodeArray } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Header from 'components/header/Header';
@@ -8,7 +8,7 @@ const PageContentStyled = styled.div`
 `;
 
 type MainTemplateProps = {
-  children: React.ReactNode;
+  children: ReactNode | ReactNodeArray;
 };
 
 const MainTemplate: FunctionComponent<MainTemplateProps> = ({ children }) => (
