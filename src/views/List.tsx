@@ -25,12 +25,12 @@ type GetLists = {
   filters: string;
 };
 
-type Props = {
+interface ListProps {
   getLists: ({ filters }: GetLists) => void;
   shoppingLists: Array<List>;
-};
+}
 
-const List: FunctionComponent<Props> = ({ getLists, shoppingLists }) => {
+const List: FunctionComponent<ListProps> = ({ getLists, shoppingLists }) => {
   useEffect(() => {
     const filters = new URLSearchParams();
     filters.append('done', 'false');
