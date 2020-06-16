@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-const PrivateRoute = ({ children, isLogged, ...rest }) => {
+interface PrivateRouteProps {
+  children: React.ReactNode;
+  isLogged: boolean | undefined;
+}
+
+const PrivateRoute: FunctionComponent<PrivateRouteProps> = ({ children, isLogged, ...rest }) => {
   return (
     <Route
       {...rest}
@@ -32,7 +37,11 @@ PrivateRoute.defaultProps = {
   isLogged: false,
 };
 
-const mapStateToProps = (state) => {
+interface State {
+  auth: { isLogged: boolean };
+}
+
+const mapStateToProps = (state: State) => {
   return {
     isLogged: state.auth.isLogged,
   };

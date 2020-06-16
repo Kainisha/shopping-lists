@@ -26,6 +26,7 @@ const IconButtonStyled = styled.button<IconButton>`
   align-items: center;
   justify-content: center;
   position: relative;
+  cursor: pointer;
 
   &::after {
     content: '';
@@ -103,6 +104,7 @@ const IconButtonLinkStyled = styled(Link)<IconButtonLink>`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 
   ${({ sm }) =>
     sm &&

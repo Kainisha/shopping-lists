@@ -18,6 +18,7 @@ const ButtonStyled = styled.button<Button>`
   text-weight: 600;
   font-size: 16px;
   box-shadow: 0 4px 4px lightgray;
+  cursor: pointer;
 
   &:hover {
     background-color: ${({ theme }) => theme.mainColorHover};

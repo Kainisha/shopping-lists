@@ -10,8 +10,10 @@ const Create = () => {
 
   return (
     <MainTemplate>
-      <ErrorMessage />
-      <Form id={id} />
+      <>
+        <ErrorMessage />
+        <Form id={id} />
+      </>
     </MainTemplate>
   );
 };

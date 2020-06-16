@@ -77,17 +77,18 @@ Item.propTypes = {
   description: PropTypes.string.isRequired,
   done: PropTypes.bool.isRequired,
   clickItem: PropTypes.func.isRequired,
-  updateListItem: PropTypes.func.isRequired,
+  updateListItem: PropTypes.func,
   archived: PropTypes.bool,
 };
 
 Item.defaultProps = {
   archived: false,
+  updateListItem: () => null,
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    updateAction: ({ id, description, done }: UpdateListItem) =>
+    updateListItem: ({ id, description, done }: UpdateListItem) =>
       dispatch(updateListItemAction({ id, description, done })),
   };
 };
