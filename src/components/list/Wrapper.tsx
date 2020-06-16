@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import List from 'components/list/List';
@@ -10,7 +10,26 @@ const WrapperStyled = styled.div`
   flex-direction: column;
 `;
 
-const Wrapper = ({ lists, archived }) => {
+interface Item {
+  id: number;
+  description: string;
+  done: boolean;
+}
+
+interface List {
+  id: number;
+  name: string;
+  // eslint-disable-next-line camelcase
+  shopping_list_items: Array<Item>;
+  done: boolean;
+}
+
+interface WrapperProps {
+  lists: Array<List>;
+  archived?: boolean | undefined;
+}
+
+const Wrapper: FunctionComponent<WrapperProps> = ({ lists, archived }) => {
   return (
     <>
       <Loader big />

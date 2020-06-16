@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { updateListItem as updateListItemAction } from 'actions';
 
-const ItemStyled = styled.div`
+interface ItemStyled {
+  done: boolean;
+}
+
+const ItemStyled = styled.div<ItemStyled>`
   border: 1px solid ${({ theme }) => theme.defaultColor};
   padding: 5px 15px;
   border-radius: 15px;
@@ -28,13 +34,35 @@ const ItemStyled = styled.div`
   }
 `;
 
-const Item = ({ id, description, done, clickItem, updateAction, archived }) => {
+interface UpdateListItem {
+  id: number;
+  description: string;
+  done: boolean;
+}
+
+interface ItemProps {
+  id: number;
+  description: string;
+  done: boolean;
+  clickItem: (id: number) => void;
+  updateListItem?: ({ id, description, done }: UpdateListItem) => void;
+  archived: boolean | undefined;
+}
+
+const Item: FunctionComponent<ItemProps> = ({
+  id,
+  description,
+  done,
+  clickItem,
+  updateListItem,
+  archived,
+}) => {
   const handleClick = () => {
-    if (archived) {
+    if (archived || !updateListItem) {
       return;
     }
     clickItem(id);
-    updateAction({ id, description, done: !done });
+    updateListItem({ id, description, done: !done });
   };
 
   return (
@@ -49,7 +77,7 @@ Item.propTypes = {
   description: PropTypes.string.isRequired,
   done: PropTypes.bool.isRequired,
   clickItem: PropTypes.func.isRequired,
-  updateAction: PropTypes.func.isRequired,
+  updateListItem: PropTypes.func.isRequired,
   archived: PropTypes.bool,
 };
 
@@ -57,10 +85,10 @@ Item.defaultProps = {
   archived: false,
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    updateAction: ({ id, description, done }) =>
-      dispatch({ type: 'UPDATE_LIST_ITEM', payload: { id, description, done } }),
+    updateAction: ({ id, description, done }: UpdateListItem) =>
+      dispatch(updateListItemAction({ id, description, done })),
   };
 };
 

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css, keyframes } from 'styled-components';
+import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import ArrowIcon from '@material-ui/icons/PlayArrow';
 
@@ -66,7 +67,11 @@ const IconStyled = styled.div`
   }
 `;
 
-const IconWrapperStyled = styled.div`
+interface IconWrapper {
+  showItems: boolean;
+}
+
+const IconWrapperStyled = styled.div<IconWrapper>`
   background: ${({ theme }) => theme.mainColor};
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.mainColorHover};
@@ -120,7 +125,11 @@ const opacity = keyframes`
     }
 `;
 
-const ItemsWrapperStyled = styled.div`
+interface ItemsWrapper {
+  showItems: boolean;
+}
+
+const ItemsWrapperStyled = styled.div<ItemsWrapper>`
   flex-direction: column;
   transition: opacity 300ms ease-in-out;
   animation: ${opacity} 300ms linear forwards;
@@ -136,7 +145,41 @@ const ItemsWrapperStyled = styled.div`
     `}
 `;
 
-const List = ({
+interface List {
+  name: string;
+  done: boolean;
+  id: number;
+}
+
+interface Item {
+  id: number;
+  description: string;
+  done: boolean;
+}
+
+type UpdateAction = List;
+
+interface SaveArchivedAction {
+  name: string;
+  items: Array<Item>;
+}
+
+type DeleteAction = {
+  id: number;
+};
+
+interface ListProps {
+  name: string;
+  items: Array<Item>;
+  done: boolean;
+  id: number;
+  archived?: boolean | undefined;
+  updateAction: ({ id, name, done }: UpdateAction) => void;
+  saveArchivedAction: ({ name, items }: SaveArchivedAction) => void;
+  deleteAction: ({ id }: DeleteAction) => void;
+}
+
+const List: FunctionComponent<ListProps> = ({
   name,
   items,
   done,
@@ -152,7 +195,7 @@ const List = ({
   const [showItems, setShowItems] = useState(false);
   const [doneStatus, setDoneStatus] = useState(done);
 
-  const handleClickItem = (itemId) => {
+  const handleClickItem = (itemId: number) => {
     const changedItems = listItems.map((item) => {
       if (item.id !== itemId) {
         return item;
@@ -173,6 +216,7 @@ const List = ({
     setDoneStatus(!doneStatus);
     updateAction({ id, name, done: !doneStatus });
   };
+
   const handleSave = () => saveArchivedAction({ name, items });
   const handleDelete = () => deleteAction({ id });
 
@@ -238,23 +282,22 @@ List.propTypes = {
   items: PropTypes.array.isRequired,
   done: PropTypes.bool.isRequired,
   updateAction: PropTypes.func.isRequired,
-  saveArchivedAction: PropTypes.func,
+  saveArchivedAction: PropTypes.func.isRequired,
   deleteAction: PropTypes.func.isRequired,
   archived: PropTypes.bool,
 };
 
 List.defaultProps = {
   archived: false,
-  saveArchivedAction: () => {},
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    updateAction: ({ id, done, name }) =>
+    updateAction: ({ id, done, name }: UpdateAction) =>
       dispatch({ type: UPDATE_LIST, payload: { id, done, name } }),
-    saveArchivedAction: ({ name, items }) =>
+    saveArchivedAction: ({ name, items }: SaveArchivedAction) =>
       dispatch({ type: SAVE_ARCHIVED, payload: { name, items } }),
-    deleteAction: ({ id }) => dispatch({ type: DELETE_LIST, payload: { id } }),
+    deleteAction: ({ id }: DeleteAction) => dispatch({ type: DELETE_LIST, payload: { id } }),
   };
 };
 

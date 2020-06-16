@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
 import styled, { keyframes, css } from 'styled-components';
 import CachedIcon from '@material-ui/icons/Cached';
@@ -13,7 +13,11 @@ const rotate = keyframes`
     }
 `;
 
-const LoaderStyled = styled.div`
+interface Loader {
+  big: boolean | undefined;
+}
+
+const LoaderStyled = styled.div<Loader>`
   display: flex;
   justify-content: center;
   height: 100%;
@@ -21,7 +25,7 @@ const LoaderStyled = styled.div`
   position: relative;
   z-index: 10;
   background: rgba(0, 0, 0, 0.15);
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   align-items: center;
@@ -37,7 +41,12 @@ const LoaderStyled = styled.div`
   }
 `;
 
-const Loader = ({ big, isFetching }) => (
+interface LoaderProps {
+  big: boolean | undefined;
+  isFetching: boolean;
+}
+
+const Loader: FunctionComponent<LoaderProps> = ({ big, isFetching }) => (
   <>
     {isFetching && (
       <LoaderStyled big={big}>
@@ -49,15 +58,18 @@ const Loader = ({ big, isFetching }) => (
 
 Loader.propTypes = {
   big: PropTypes.bool,
-  isFetching: PropTypes.bool,
+  isFetching: PropTypes.bool.isRequired,
 };
 
 Loader.defaultProps = {
   big: false,
-  isFetching: false,
 };
 
-const mapStateToProps = (state) => {
+interface MapStateToProps {
+  auth: { isFetching: boolean };
+}
+
+const mapStateToProps = (state: MapStateToProps) => {
   return {
     isFetching: state.auth.isFetching,
   };

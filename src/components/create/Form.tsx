@@ -1,15 +1,19 @@
 /* eslint-disable react/require-default-props */
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect, FunctionComponent } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { v4 as uuidv4 } from 'uuid';
+import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import InputText from 'components/inputs/Text';
 import Button from 'components/buttons/Button';
 import ItemForm from 'components/create/ItemForm';
 
-import { CREATE_LIST, GET_LISTS, UPDATE_ALL } from 'actions';
+import {
+  createList as createListAction,
+  getLists as getListsAction,
+  updateAll as updateAllAction,
+} from 'actions';
 
 const FormWrapperStyled = styled.div`
   display: grid;
@@ -38,20 +42,79 @@ const ItemsFormWrapperStyled = styled.div`
   grid-row-gap: 1rem;
 `;
 
-const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, updateAllAction }) => {
+interface Item {
+  id: string;
+  description: string;
+  done: boolean;
+  changed?: boolean;
+}
+
+interface List {
+  id: number;
+  name: string;
+  // eslint-disable-next-line camelcase
+  shopping_list_items: Array<Item>;
+  done: boolean;
+}
+
+interface GetLists {
+  id: string;
+  filters: string;
+}
+
+interface CreateList {
+  name: string;
+  done: boolean;
+  items: Array<Item>;
+}
+
+interface UpdateAll {
+  id: string | null;
+  name: string;
+  newItems: Item[];
+  deletedItems: string[];
+  changedItems: Item[];
+}
+
+interface FormProps {
+  id: string | null;
+  shoppingList: List | undefined;
+  isFetching: boolean | undefined;
+  createList: ({ name, done, items }: CreateList) => void;
+  getLists: ({ id, filters }: GetLists) => void;
+  updateAll: ({ id, name, newItems, deletedItems, changedItems }: UpdateAll) => void;
+}
+
+interface HandleChangeIte {
+  id: string;
+  description: string;
+}
+
+interface HandleDeleteItem {
+  id: string;
+}
+
+const Form: FunctionComponent<FormProps> = ({
+  id,
+  shoppingList,
+  isFetching,
+  createList,
+  getLists,
+  updateAll,
+}) => {
   const [name, setName] = useState('');
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<Item[]>([]);
   const { handleSubmit } = useForm();
-  const [deletedItems, setDeletedItems] = useState([]);
+  const [deletedItems, setDeletedItems] = useState<string[]>([]);
 
   const isNew = () => id === null;
 
-  const getList = async () => {
+  const getList = () => {
     // eslint-disable-next-line radix
-    if (shoppingList.id === parseInt(id)) {
+    if (id === null || !shoppingList || shoppingList.id === parseInt(id)) {
       return;
     }
-    await getListsAction({ id, filters: '' });
+    getLists({ id, filters: '' });
   };
 
   useEffect(() => {
@@ -71,14 +134,14 @@ const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, upda
     setItems(initItems);
   }, [id, shoppingList]);
 
-  const handleChange = ({ value }) => setName(value);
+  const handleChange = ({ value }: { value: string }) => setName(value);
 
   const handleAddItem = () => {
-    const newItem = { name: '', id: uuidv4(), done: false };
+    const newItem: Item = { description: '', id: uuidv4(), done: false };
     setItems((prev) => [...prev, newItem]);
   };
 
-  const handleChangeItem = ({ id: itemId, description }) => {
+  const handleChangeItem = ({ id: itemId, description }: HandleChangeItem) => {
     const temp = items;
     const index = temp.findIndex((item) => item.id === itemId);
     const updatedItem = Object.assign(items[index], { description, changed: true });
@@ -86,7 +149,7 @@ const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, upda
     setItems(temp);
   };
 
-  const handleDeleteItem = ({ id: itemId }) => {
+  const handleDeleteItem = ({ id: itemId }: HandleDeleteItem) => {
     const temp = items;
     const index = items.findIndex((item) => item.id === itemId);
     temp.splice(index, 1);
@@ -96,7 +159,11 @@ const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, upda
 
   const onSubmit = async () => {
     if (isNew()) {
-      await createAction({ name, done: false, items });
+      createList({ name, done: false, items });
+      return;
+    }
+
+    if (!shoppingList) {
       return;
     }
 
@@ -105,7 +172,7 @@ const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, upda
     const initItemsIds = initItems.map((item) => item.id);
     const newItems = items.filter((item) => !initItemsIds.includes(item.id));
     const changedItems = items.filter((item) => item.changed && initItemsIds.includes(item.id));
-    updateAllAction({ id, name, newItems, deletedItems, changedItems });
+    updateAll({ id, name, newItems, deletedItems, changedItems });
   };
 
   const disabledSubmit = () => items.length === 0;
@@ -116,7 +183,7 @@ const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, upda
         <FormStyled onSubmit={handleSubmit(onSubmit)}>
           <InputText name="name" label="Name" initValue={name} changeValue={handleChange} />
           <ButtonsWrapperStyled>
-            <Button text="New item" type="button" onClick={handleAddItem} />
+            <Button text="New item" onClick={handleAddItem} />
           </ButtonsWrapperStyled>
           <ItemsFormWrapperStyled>
             {items.map(({ description, id: itemId }) => (
@@ -132,9 +199,10 @@ const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, upda
           <ButtonsWrapperStyled>
             <Button
               text="Save"
-              type="submit"
               success
               isFetching={isFetching}
+              submit
+              onClick={() => null}
               disabled={disabledSubmit()}
             />
           </ButtonsWrapperStyled>
@@ -144,35 +212,25 @@ const Form = ({ id, shoppingList, isFetching, createAction, getListsAction, upda
   );
 };
 
-Form.propTypes = {
-  isFetching: PropTypes.bool,
-  createAction: PropTypes.func.isRequired,
-  id: PropTypes.string,
-  getListsAction: PropTypes.func.isRequired,
-  updateAllAction: PropTypes.func.isRequired,
-  shoppingList: PropTypes.object,
-};
+interface MapStateToProps {
+  auth: { isFetching: boolean };
+  shoppingLists: { list: List };
+}
 
-Form.defaultProps = {
-  isFetching: false,
-  id: null,
-  shoppingList: {},
-};
-
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: MapStateToProps) => {
   return {
     isFetching: state.auth.isFetching,
     shoppingList: state.shoppingLists.list,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    createAction: ({ name, done, items }) =>
-      dispatch({ type: CREATE_LIST, payload: { name, done, items } }),
-    getListsAction: ({ filters, id }) => dispatch({ type: GET_LISTS, payload: { filters, id } }),
-    updateAllAction: ({ id, name, newItems, deletedItems, changedItems }) =>
-      dispatch({ type: UPDATE_ALL, payload: { id, name, newItems, deletedItems, changedItems } }),
+    createList: ({ name, done, items }: CreateList) =>
+      dispatch(createListAction({ name, done, items })),
+    getLists: ({ filters, id }: GetLists) => dispatch(getListsAction({ filters, id })),
+    updateAll: ({ id, name, newItems, deletedItems, changedItems }: UpdateAll) =>
+      dispatch(updateAllAction({ id, name, newItems, deletedItems, changedItems })),
   };
 };
 

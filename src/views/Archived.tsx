@@ -1,23 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, FunctionComponent } from 'react';
 import PropTypes from 'prop-types';
+import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import MainTemplate from 'layout/MainTemplate';
 import Wrapper from 'components/list/Wrapper';
 import Filter from 'components/archived/Filter';
 
-import { GET_LISTS } from 'actions';
+import { getLists } from 'actions';
 
-const Archived = ({ getListsAction, shoppingLists }) => {
+interface Item {
+  id: number;
+  description: string;
+  done: boolean;
+}
+
+interface List {
+  name: string;
+  id: number;
+  done: boolean;
+  // eslint-disable-next-line camelcase
+  shopping_list_items: Array<Item>;
+}
+
+interface GetListsAction {
+  filters: string;
+}
+
+interface ArchivedProps {
+  getListsAction: ({ filters }: GetListsAction) => void;
+  shoppingLists: List[];
+}
+
+const Archived: FunctionComponent<ArchivedProps> = ({ getListsAction, shoppingLists }) => {
   useEffect(() => {
     const filtersParams = new URLSearchParams();
-    filtersParams.append('done', true);
+    filtersParams.append('done', 'true');
     filtersParams.append('_sort', 'id:DESC');
     getListsAction({ filters: filtersParams.toString() });
   }, []);
 
-  const handleFilter = (filters) => {
+  const handleFilter = (filters: { name: string }) => {
     const filtersParams = new URLSearchParams();
-    filtersParams.append('done', true);
+    filtersParams.append('done', 'true');
     filtersParams.append('_sort', 'id:DESC');
 
     // eslint-disable-next-line no-restricted-syntax
@@ -41,24 +65,23 @@ const Archived = ({ getListsAction, shoppingLists }) => {
 };
 
 Archived.propTypes = {
-  getListsAction: PropTypes.func,
-  shoppingLists: PropTypes.array,
+  getListsAction: PropTypes.func.isRequired,
+  shoppingLists: PropTypes.array.isRequired,
 };
 
-Archived.defaultProps = {
-  getListsAction: () => {},
-  shoppingLists: [],
-};
+interface MapStateToProps {
+  shoppingLists: { lists: List[] };
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: MapStateToProps) => {
   return {
     shoppingLists: state.shoppingLists.lists,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    getListsAction: ({ filters }) => dispatch({ type: GET_LISTS, payload: { filters } }),
+    getListsAction: ({ filters }: GetListsAction) => dispatch(getLists({ filters })),
   };
 };
 

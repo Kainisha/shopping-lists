@@ -1,12 +1,18 @@
 {
     "extends": [
+        "plugin:react/recommended",
         "airbnb",
+        "plugin:@typescript-eslint/recommended",
+        "prettier/@typescript-eslint",
         "prettier",
         "prettier/react"
     ],
-    "parser": "babel-eslint",
+    "parser": "@typescript-eslint/parser",
     "env": {
-      "jest": true
+      "jest": true,
+      "browser": true,
+      "commonjs": true,
+      "es6": true
     },
     "globals": {
       "document": true
@@ -17,11 +23,14 @@
       "react/jsx-filename-extension": [
         1,
         {
-          "extensions": [".js"]
+          "extensions": [".js", ".tsx"]
         }
       ]
     },
     "settings": {
+      "import/parsers": {
+        "@typescript-eslint/parser": [".ts", ".tsx"],
+      },
       "import/resolver": {
         "node": {
           "paths": ["./src"],

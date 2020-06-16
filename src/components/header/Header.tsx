@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from 'components/buttons/Button';
+import Link from 'components/buttons/Link';
 
 const HeaderStyled = styled.header`
   height: 40px;
@@ -25,9 +25,9 @@ const HeaderStyled = styled.header`
 
 const Header = () => (
   <HeaderStyled>
-    <Button text="List" to="/list" main link icon="list" />
-    <Button text="Archived" to="/achived" main link icon="archive" />
-    <Button text="Create" to="/create" main link icon="new" />
+    <Link text="List" to="/list" icon="list" />
+    <Link text="Archived" to="/achived" icon="archive" />
+    <Link text="Create" to="/create" icon="new" />
   </HeaderStyled>
 );
 
