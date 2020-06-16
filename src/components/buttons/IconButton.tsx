@@ -142,7 +142,7 @@ const IconButtonLinkStyled = styled(Link)<IconButtonLink>`
 
 type Icon = 'done' | 'create' | 'remove' | 'save' | 'search';
 
-interface IconButtonProps {
+interface ButtonProps {
   sm: boolean | undefined;
   success?: boolean | undefined;
   error?: boolean | undefined;
@@ -154,7 +154,7 @@ interface IconButtonProps {
   disabled?: boolean;
 }
 
-interface IconLinkProps {
+interface LinkProps {
   sm?: boolean | undefined;
   success?: boolean | undefined;
   error?: boolean | undefined;
@@ -166,9 +166,9 @@ interface IconLinkProps {
   disabled?: boolean | undefined;
 }
 
-type Props = IconButtonProps | IconLinkProps;
+type IconButtonProps = ButtonProps | LinkProps;
 
-const IconButton: FunctionComponent<Props> = ({
+const IconButton: FunctionComponent<IconButtonProps> = ({
   icon,
   className,
   success,

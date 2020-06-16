@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import styled, { css, keyframes } from 'styled-components';
 import CachedIcon from '@material-ui/icons/Cached';
 
-interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
+interface Button extends React.HTMLProps<HTMLButtonElement> {
   success: boolean | undefined;
   error: boolean | undefined;
 }
 
-const ButtonStyled = styled.button<ButtonProps>`
+const ButtonStyled = styled.button<Button>`
   width: 9rem;
   height: 2rem;
   transition: background-color 300ms ease-in-out;
@@ -66,7 +66,7 @@ const IconWrapper = styled.span`
   }
 `;
 
-type Props = {
+interface ButtonProps {
   text: string;
   success?: boolean | undefined;
   error?: boolean | undefined;
@@ -74,9 +74,9 @@ type Props = {
   isFetching?: boolean | undefined;
   disabled?: boolean;
   submit?: boolean | undefined;
-};
+}
 
-const Button: FunctionComponent<Props> = ({
+const Button: FunctionComponent<ButtonProps> = ({
   text,
   success,
   error,

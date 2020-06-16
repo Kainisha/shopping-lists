@@ -39,12 +39,12 @@ const BarStyled = styled.div<Bar>`
   background: ${({ theme }) => theme.successColor};
 `;
 
-type Props = {
+interface BarProps {
   all: number;
   counter: number;
-};
+}
 
-const Bar: FunctionComponent<Props> = ({ all, counter }) => {
+const Bar: FunctionComponent<BarProps> = ({ all, counter }) => {
   const computePercent = () => {
     const percent = all !== 0 ? Math.round((counter / all) * 100) : 0;
     return `${percent} %`;

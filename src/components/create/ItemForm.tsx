@@ -28,12 +28,12 @@ interface OnDelete {
   id: string;
 }
 
-type ItemFormProps = {
+interface ItemFormProps {
   onChange: ({ id, description }: OnChange) => void;
   onDelete: ({ id }: OnDelete) => void;
   id: string;
   initValue: string | undefined;
-};
+}
 
 const ItemForm: FunctionComponent<ItemFormProps> = ({ onChange, onDelete, id, initValue }) => {
   const handleChange = ({ value }: { value: string }) => onChange({ id, description: value });

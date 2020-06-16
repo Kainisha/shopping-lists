@@ -24,10 +24,10 @@ interface List {
   done: boolean;
 }
 
-type WrapperProps = {
+interface WrapperProps {
   lists: Array<List>;
   archived?: boolean | undefined;
-};
+}
 
 const Wrapper: FunctionComponent<WrapperProps> = ({ lists, archived }) => {
   return (

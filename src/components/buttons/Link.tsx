@@ -51,13 +51,13 @@ const NavLinkStyled = styled(NavLink)`
   }
 `;
 
-type Props = {
-  text: string,
-  to: string,
-  icon?: string,
+interface LinkProps {
+  text: string;
+  to: string;
+  icon?: string;
 }
 
-const Link: FunctionComponent<Props> = ({ text, to, icon }) => {
+const Link: FunctionComponent<LinkProps> = ({ text, to, icon }) => {
   const buttonIcon = () => {
     switch (icon) {
       case 'list': {

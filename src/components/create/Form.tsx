@@ -76,23 +76,23 @@ interface UpdateAll {
   changedItems: Item[];
 }
 
-type FormProps = {
+interface FormProps {
   id: string | null;
   shoppingList: List | undefined;
   isFetching: boolean | undefined;
   createList: ({ name, done, items }: CreateList) => void;
   getLists: ({ id, filters }: GetLists) => void;
   updateAll: ({ id, name, newItems, deletedItems, changedItems }: UpdateAll) => void;
-};
+}
 
-type HandleChangeItem = {
+interface HandleChangeIte {
   id: string;
   description: string;
-};
+}
 
-type HandleDeleteItem = {
+interface HandleDeleteItem {
   id: string;
-};
+}
 
 const Form: FunctionComponent<FormProps> = ({
   id,

@@ -92,7 +92,7 @@ const LabelSpanStyled = styled.span`
   color: gray;
 `;
 
-type Props = {
+interface TextProps {
   name: string;
   label: string;
   rowGap?: boolean | undefined;
@@ -100,9 +100,9 @@ type Props = {
   changeValue: ({ name, value }: { name: string; value: string }) => void;
   initValue?: string | undefined;
   autocomplete?: string | undefined;
-};
+}
 
-const Text: FunctionComponent<Props> = ({
+const Text: FunctionComponent<TextProps> = ({
   name,
   label,
   rowGap,

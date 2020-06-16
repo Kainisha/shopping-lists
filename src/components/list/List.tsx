@@ -159,16 +159,16 @@ interface Item {
 
 type UpdateAction = List;
 
-type SaveArchivedAction = {
+interface SaveArchivedAction {
   name: string;
   items: Array<Item>;
-};
+}
 
 type DeleteAction = {
   id: number;
 };
 
-type Props = {
+interface ListProps {
   name: string;
   items: Array<Item>;
   done: boolean;
@@ -177,9 +177,9 @@ type Props = {
   updateAction: ({ id, name, done }: UpdateAction) => void;
   saveArchivedAction: ({ name, items }: SaveArchivedAction) => void;
   deleteAction: ({ id }: DeleteAction) => void;
-};
+}
 
-const List: FunctionComponent<Props> = ({
+const List: FunctionComponent<ListProps> = ({
   name,
   items,
   done,
