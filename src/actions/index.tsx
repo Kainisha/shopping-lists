@@ -90,3 +90,15 @@ export const updateAll: UpdateAll = ({ id, name, newItems, deletedItems, changed
   type: UPDATE_ALL,
   payload: { id, name, newItems, deletedItems, changedItems },
 });
+
+interface UpdateListItem {
+  ({ id, description, done }: { id: number; done: boolean; description: string }): {
+    type: string;
+    payload: { id: number; description: string; done: boolean };
+  };
+}
+
+export const updateListItem: UpdateListItem = ({ id, description, done }) => ({
+  type: UPDATE_LIST_ITEM,
+  payload: { id, description, done },
+});

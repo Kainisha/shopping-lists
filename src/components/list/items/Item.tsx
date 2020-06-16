@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { updateListItem as updateListItemAction } from 'actions';
 
 interface ItemStyled {
   done: boolean;
@@ -33,35 +34,35 @@ const ItemStyled = styled.div<ItemStyled>`
   }
 `;
 
-type UpdateAction = {
+interface UpdateListItem {
   id: number;
   description: string;
   done: boolean;
-};
+}
 
-type ItemProps = {
+interface ItemProps {
   id: number;
   description: string;
   done: boolean;
   clickItem: (id: number) => void;
-  updateAction: ({ id, description, done }: UpdateAction) => void;
+  updateListItem?: ({ id, description, done }: UpdateListItem) => void;
   archived: boolean | undefined;
-};
+}
 
 const Item: FunctionComponent<ItemProps> = ({
   id,
   description,
   done,
   clickItem,
-  updateAction,
+  updateListItem,
   archived,
 }) => {
   const handleClick = () => {
-    if (archived) {
+    if (archived || !updateListItem) {
       return;
     }
     clickItem(id);
-    updateAction({ id, description, done: !done });
+    updateListItem({ id, description, done: !done });
   };
 
   return (
@@ -76,7 +77,7 @@ Item.propTypes = {
   description: PropTypes.string.isRequired,
   done: PropTypes.bool.isRequired,
   clickItem: PropTypes.func.isRequired,
-  updateAction: PropTypes.func.isRequired,
+  updateListItem: PropTypes.func.isRequired,
   archived: PropTypes.bool,
 };
 
@@ -86,8 +87,8 @@ Item.defaultProps = {
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
-    updateAction: ({ id, description, done }: UpdateAction) =>
-      dispatch({ type: 'UPDATE_LIST_ITEM', payload: { id, description, done } }),
+    updateAction: ({ id, description, done }: UpdateListItem) =>
+      dispatch(updateListItemAction({ id, description, done })),
   };
 };
 
