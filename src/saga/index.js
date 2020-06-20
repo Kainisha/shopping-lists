@@ -39,7 +39,6 @@ const fetchLogin = async ({ login, password }) => {
 };
 
 const fetchShoppingLists = async ({ token, filters, id = null }) => {
-  console.log('fetch', id);
   const computedUrl =
     id === null ? `${url}/shopping-lists?${filters}` : `${url}/shopping-lists/${id}`;
   const response = await axios.get(computedUrl, {
@@ -180,7 +179,7 @@ function* getShoppingLists({ payload: { filters, id = null } }) {
   yield put({ type: REQUEST, payload: true });
   yield put({ type: SET_ERROR, payload: { isError: false, errorText: '' } });
   const token = yield select(getToken);
-  console.log('saga', id);
+
   try {
     const response = yield call(fetchShoppingLists, { token, filters, id });
     yield put({ type: REQUEST, payload: false });

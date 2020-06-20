@@ -114,7 +114,6 @@ const Form: FunctionComponent<FormProps> = ({
     if (!id || !shoppingList || shoppingList.id === parseInt(id)) {
       return;
     }
-    console.log(id);
     getLists({ id, filters: '' });
   };
 
@@ -179,37 +178,41 @@ const Form: FunctionComponent<FormProps> = ({
   const disabledSubmit = () => items.length === 0;
 
   return (
-    <>
-      <FormWrapperStyled>
-        <FormStyled onSubmit={handleSubmit(onSubmit)}>
-          <InputText name="name" label="Name" initValue={name} changeValue={handleChange} />
-          <ButtonsWrapperStyled>
-            <Button text="New item" onClick={handleAddItem} />
-          </ButtonsWrapperStyled>
-          <ItemsFormWrapperStyled>
-            {items.map(({ description, id: itemId }) => (
-              <ItemForm
-                onChange={handleChangeItem}
-                onDelete={handleDeleteItem}
-                key={`form-item-${itemId}`}
-                initValue={description}
-                id={itemId}
-              />
-            ))}
-          </ItemsFormWrapperStyled>
-          <ButtonsWrapperStyled>
-            <Button
-              text="Save"
-              success
-              isFetching={isFetching}
-              submit
-              onClick={() => null}
-              disabled={disabledSubmit()}
+    <FormWrapperStyled>
+      <FormStyled onSubmit={handleSubmit(onSubmit)}>
+        <InputText
+          name="name"
+          label="Name"
+          initValue={name}
+          changeValue={handleChange}
+          autocomplete="nope"
+        />
+        <ButtonsWrapperStyled>
+          <Button
+            text="Save"
+            success
+            isFetching={isFetching}
+            submit
+            onClick={() => null}
+            disabled={disabledSubmit()}
+          />
+        </ButtonsWrapperStyled>
+        <ItemsFormWrapperStyled>
+          {items.map(({ description, id: itemId }) => (
+            <ItemForm
+              onChange={handleChangeItem}
+              onDelete={handleDeleteItem}
+              key={`form-item-${itemId}`}
+              initValue={description}
+              id={itemId}
             />
-          </ButtonsWrapperStyled>
-        </FormStyled>
-      </FormWrapperStyled>
-    </>
+          ))}
+        </ItemsFormWrapperStyled>
+        <ButtonsWrapperStyled>
+          <Button text="New item" onClick={handleAddItem} />
+        </ButtonsWrapperStyled>
+      </FormStyled>
+    </FormWrapperStyled>
   );
 };
 
