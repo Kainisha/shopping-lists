@@ -1,5 +1,3 @@
-import { string } from 'prop-types';
-
 export const REQUEST = 'REQUEST';
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const SET_USER = 'SET_USER';
