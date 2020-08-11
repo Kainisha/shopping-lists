@@ -34,7 +34,7 @@ const Wrapper: FunctionComponent<WrapperProps> = ({ lists, archived }) => {
     <>
       <Loader big />
       <ErrorMessage />
-      <WrapperStyled>
+      <WrapperStyled data-testid="wrapper">
         {lists.map(({ id, name, shopping_list_items: items, done }) => (
           <List
             name={name}
@@ -45,6 +45,7 @@ const Wrapper: FunctionComponent<WrapperProps> = ({ lists, archived }) => {
             archived={archived}
           />
         ))}
+        {lists.length === 0 && <h4>Empty list</h4>}
       </WrapperStyled>
     </>
   );
