@@ -7,12 +7,10 @@ jobs:
       name: node/default
     steps:
       - checkout
-      - run: npm install
-      - save_cache:
-          name: Save NPM package cache
-          key: npm-{{ checksum "package-lock.json" }}
-          paths:
-            - ~/.cache/npm
+      - node/install-packages:
+          cache-path: ~/project/node_modules
+          override-ci-command: npm install
+    - run: npm run test
   static-tests:
     executor:
       name: node/default
