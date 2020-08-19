@@ -7,13 +7,17 @@ jobs:
       name: node/default
     steps:
       - checkout
-      - run: npm install
+      - node/with-cache:
+          steps:
+            - run: npm install
   static-tests:
     executor:
       name: node/default
     steps:
       - checkout
-      - run: npm run lint
+      - node/with-cache:
+          steps:
+            - run: npm run lint
 workflows:
   tests-build:
     jobs:
