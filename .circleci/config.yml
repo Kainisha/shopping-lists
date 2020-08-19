@@ -2,6 +2,14 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
 jobs:
+  dependiences:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
   static-tests:
     executor:
       name: node/default
@@ -11,4 +19,7 @@ jobs:
 workflows:
   tests-build:
     jobs:
-      - static-tests
+      - dependiences
+      - static-tests:
+          requires:
+            - dependiences
