@@ -5,3 +5,6 @@ workflows:
   node-tests:
     jobs:
       - node/test
+  static-tests:
+    jobs:
+      - run: npm run lint
