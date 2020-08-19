@@ -20,9 +20,7 @@ jobs:
       - restore_cache:
           keys:
             - npm-{{ checksum "package-lock.json" }}
-      - node/with-cache:
-          steps:
-            - run: npm run lint
+      - run: npm run lint
 workflows:
   tests-build:
     jobs:
