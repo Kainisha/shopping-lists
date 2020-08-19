@@ -3,13 +3,12 @@ orbs:
   node: circleci/node@3.0.0
 jobs:
   static-tests:
+    executor:
+      name: node/default
     steps:
       - checkout
       - run: npm run lint
 workflows:
-  node-tests:
-    jobs:
-      - node/test
-  tests:
+  tests-build:
     jobs:
       - static-tests
