@@ -26,15 +26,6 @@ jobs:
       - node/install-packages:
           cache-path: ~/project/node_modules
       - run: npm run test
-  deploy:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - node/install-packages:
-          cache-path: ~/project/node_modules
-      - run: npm run build
-      - run: npm install netlify-cli -g
 workflows:
   tests-build:
     jobs:
@@ -53,10 +44,3 @@ workflows:
         filters:
           branches:
             only: master
-      - deploy:
-          requires:
-            - hold
-          filters:
-            branches:
-              only: master
-
