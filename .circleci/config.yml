@@ -31,13 +31,12 @@ jobs:
       name: node/default
     environment:
       CI: false
-    working_directory: ~/repo
     steps:
       - checkout
       - node/install-packages:
           cache-path: ~/project/node_modules
       - run: npm run build
-      - run: npm install netlify-cli -g
+      - run: sudo npm install netlify-cli -g
 workflows:
   tests-build:
     jobs:
