@@ -33,7 +33,6 @@ jobs:
       - checkout
       - node/install-packages:
           cache-path: ~/project/node_modules
-      - react/build
       - run: npm run build
       - run: npm install netlify-cli -g
 workflows:
