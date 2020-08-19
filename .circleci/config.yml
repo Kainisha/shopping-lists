@@ -7,12 +7,14 @@ jobs:
       name: node/default
     steps:
       - checkout
+      - restore_cache:
+        name: Restore Cache
+        keys:
+          - npm-{{ checksum "package-lock.json" }}
       - run: npm install
       - save_cache: 
-        name: Save NPM package cache
-        key: npm-package-{{ checksum "package-lock.json" }}
-        paths:
-          - ~/.cache/npm
+          name: Save NPM package cache
+          key: npm-{{ checksum "package-lock.json" }}
   static-tests:
     executor:
       name: node/default
@@ -21,7 +23,7 @@ jobs:
       - restore_cache:
         name: Restore Cache
         keys:
-          - npm-package-{{ checksum "package-lock.json" }}
+          - npm-{{ checksum "package-lock.json" }}
       - run: npm run lint
 workflows:
   tests-build:
