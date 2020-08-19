@@ -10,8 +10,6 @@ jobs:
       - node/install-packages:
           cache-path: ~/project/node_modules
           override-ci-command: npm install
-      - run:
-          command: npm run test
   static-tests:
     executor:
       name: node/default
@@ -21,10 +19,22 @@ jobs:
           cache-path: ~/project/node_modules
           override-ci-command: npm install
       - run: npm run lint
+  components-tests:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          cache-path: ~/project/node_modules
+          override-ci-command: npm install
+      - run: npm run tests
 workflows:
   tests-build:
     jobs:
       - dependiences
       - static-tests:
+          requires:
+            - dependiences
+      - components-tests:
           requires:
             - dependiences
