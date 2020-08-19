@@ -48,8 +48,15 @@ workflows:
       - hold:
         type: approval
         requires:
-            - static-tests
-            - components-tests
+          - static-tests
+          - components-tests
         filters:
+          branches:
+            only: master
+      - deploy:
+          requires:
+            - hold
+          filters:
             branches:
               only: master
+
