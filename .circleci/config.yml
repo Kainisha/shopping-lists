@@ -17,7 +17,6 @@ jobs:
       - checkout
       - node/install-packages:
           cache-path: ~/project/node_modules
-          override-ci-command: npm install
       - run: npm run lint
   components-tests:
     executor:
@@ -27,6 +26,15 @@ jobs:
       - node/install-packages:
           cache-path: ~/project/node_modules
       - run: npm run test
+  deploy:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          cache-path: ~/project/node_modules
+      - run: npm run build
+      - run: npm install netlify-cli -g
 workflows:
   tests-build:
     jobs:
@@ -37,3 +45,11 @@ workflows:
       - components-tests:
           requires:
             - dependiences
+      - hold:
+        type: approval
+        requires:
+            - static-tests
+            - components-tests
+        filters:
+            branches:
+              only: master
