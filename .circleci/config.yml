@@ -12,6 +12,8 @@ jobs:
           override-ci-command: npm install
       - run:
           command: npm run test
+      - run:
+          command: npm run lint
   static-tests:
     executor:
       name: node/default
