@@ -37,10 +37,17 @@ workflows:
           requires:
             - dependiences
       - hold:
-        type: approval
-        requires:
-          - static-tests
-          - components-tests
+          type: approval
+          requires:
+            - static-tests
+            - components-tests
         filters:
           branches:
             only: master
+      - deploy:
+          requires:
+            - hold
+          filters:
+            branches:
+              only: master
+
