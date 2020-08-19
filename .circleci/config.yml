@@ -1,7 +1,15 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.0
+jobs:
+  static-tests:
+    steps:
+      - checkout
+      - run: npm run lint
 workflows:
   node-tests:
     jobs:
       - node/test
+  tests:
+    jobs:
+      - static-tests
