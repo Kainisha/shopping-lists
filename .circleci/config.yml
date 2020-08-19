@@ -29,11 +29,11 @@ jobs:
   deploy:
     executor:
       name: node/default
-    working_directory: ~/repo
     steps:
       - checkout
       - node/install-packages:
           cache-path: ~/project/node_modules
+      - react/build
       - run: npm run build
       - run: npm install netlify-cli -g
 workflows:
@@ -56,7 +56,7 @@ workflows:
               only: master
       - deploy:
           requires:
-            - hold
+            - dependiences
           filters:
             branches:
               only: master
