@@ -29,6 +29,8 @@ jobs:
   deploy:
     executor:
       name: node/default
+    environment:
+      CI: false
     steps:
       - checkout
       - node/install-packages:
