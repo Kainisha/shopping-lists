@@ -13,30 +13,28 @@ import Create from 'views/Create';
 import Archived from 'views/Archived';
 import theme from 'layout/theme';
 
-const App = () => {
-  return (
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <ThemeProvider theme={theme}>
-          <Switch>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <PrivateRoute path="/list">
-              <List />
-            </PrivateRoute>
-            <PrivateRoute path="/create/:id?">
-              <Create />
-            </PrivateRoute>
-            <PrivateRoute to="/archived">
-              <Archived />
-            </PrivateRoute>
-          </Switch>
-          <GlobalStyles />
-        </ThemeProvider>
-      </ConnectedRouter>
-    </Provider>
-  );
-};
+const App = () => (
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <ThemeProvider theme={theme}>
+        <Switch>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <PrivateRoute path="/list">
+            <List />
+          </PrivateRoute>
+          <PrivateRoute path="/create/:id?">
+            <Create />
+          </PrivateRoute>
+          <PrivateRoute to="/archived">
+            <Archived />
+          </PrivateRoute>
+        </Switch>
+        <GlobalStyles />
+      </ThemeProvider>
+    </ConnectedRouter>
+  </Provider>
+);
 
 export default App;
