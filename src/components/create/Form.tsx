@@ -185,7 +185,7 @@ const Form: FunctionComponent<FormProps> = ({
           label="Name"
           initValue={name}
           changeValue={handleChange}
-          autocomplete="nope"
+          autocomplete="off"
         />
         <ButtonsWrapperStyled>
           <Button
