@@ -21,7 +21,7 @@ const WrapperStyled = styled.div<Wrapper>`
 `;
 
 interface Input {
-  autocomplete: string | undefined;
+  autoComplete: string | undefined;
 }
 
 const InputStyled = styled.input<Input>`
@@ -137,7 +137,7 @@ const Text: FunctionComponent<TextProps> = ({
         name={name}
         required
         onChange={handleChange}
-        autocomplete={autocomplete}
+        autoComplete={autocomplete}
       />
       <LabelStyled>
         <LabelSpanStyled>{label}</LabelSpanStyled>
