@@ -59,7 +59,7 @@ workflows:
               only: master
       - deploy:
           requires:
-            - dependiences
+            - hold
           filters:
             branches:
               only: master
