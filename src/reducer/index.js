@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import ShoppingListsReducer from 'reducer/ShoppingLists';
+import moment from 'moment';
 
-import { REQUEST, SET_USER, SET_ERROR } from 'actions';
+import { REQUEST, SET_USER, SET_ERROR, LOGOUT_USER } from 'actions';
+import { LOCAL_STORAGE } from 'constants.js';
 
 const initState = {
   token: '',
@@ -22,10 +24,20 @@ const AuthReducer = (state = initState, { type, payload }) => {
       };
     }
     case SET_USER: {
+      const { user, token } = payload;
+
+      const { TOKEN_KEY, TOKEN_EXPIRES_KEY } = LOCAL_STORAGE;
+
+      const expiresIn = moment();
+      expiresIn.add(1, 'h');
+
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(TOKEN_EXPIRES_KEY, expiresIn.format('X'));
+
       return {
         ...state,
-        user: payload.user,
-        token: payload.token,
+        user,
+        token,
         isLogged: true,
       };
     }
@@ -35,6 +47,19 @@ const AuthReducer = (state = initState, { type, payload }) => {
         ...state,
         isError,
         errorText,
+      };
+    }
+    case LOGOUT_USER: {
+      const { TOKEN_KEY, TOKEN_EXPIRES_KEY } = LOCAL_STORAGE;
+
+      localStorage.removeItem(TOKEN_EXPIRES_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+
+      return {
+        ...state,
+        isLogged: false,
+        token: null,
+        user: {},
       };
     }
     default:

@@ -1,6 +1,7 @@
 export const REQUEST = 'REQUEST';
 export const AUTH_REQUEST = 'AUTH_REQUEST';
 export const SET_USER = 'SET_USER';
+export const LOGOUT_USER = 'LOGOUT_USER';
 export const SET_ERROR = 'SET_ERROR';
 export const SET_LISTS = 'SET_LISTS';
 export const SET_LIST = 'SET_LIST';
@@ -26,6 +27,16 @@ interface Authorize {
 export const authorize: Authorize = (login, password) => ({
   type: AUTH_REQUEST,
   payload: { login, password },
+});
+
+interface Logout {
+  (): {
+    type: string;
+  };
+}
+
+export const logout: Logout = () => ({
+  type: LOGOUT_USER,
 });
 
 interface GetLists {

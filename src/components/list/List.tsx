@@ -234,10 +234,9 @@ const List: FunctionComponent<ListProps> = ({
             icon="done"
             onClick={handleSetDone}
             disabled={!isCompleted()}
-            sm
           />
-          <IconButton className="button__create" icon="create" link to={`/create/${id}`} sm />
-          <IconButton icon="remove" className="button__remove" error onClick={handleDelete} sm />
+          <IconButton className="button__create" icon="create" link to={`/create/${id}`} />
+          <IconButton icon="remove" className="button__remove" error onClick={handleDelete} />
         </>
       )}
 

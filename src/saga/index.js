@@ -21,9 +21,11 @@ import {
   UPDATE_ALL,
   SAVE_ARCHIVED,
 } from 'actions';
+import { LOCAL_STORAGE } from 'constants.js';
 
-const getToken = (state) => state.auth.token;
+const getToken = () => localStorage.getItem(LOCAL_STORAGE.TOKEN_KEY);
 const getUser = (state) => state.auth.user;
+const getIsLogged = (state) => state.auth.isLogged;
 
 const fetchLogin = async ({ login, password }) => {
   md5(password);
@@ -178,7 +180,13 @@ function* authorize({ payload: { login, password } }) {
 function* getShoppingLists({ payload: { filters, id = null } }) {
   yield put({ type: REQUEST, payload: true });
   yield put({ type: SET_ERROR, payload: { isError: false, errorText: '' } });
+
   const token = yield select(getToken);
+  const isLogged = yield select(getIsLogged);
+
+  if (!isLogged) {
+    return;
+  }
 
   try {
     const response = yield call(fetchShoppingLists, { token, filters, id });
@@ -211,7 +219,13 @@ function* getShoppingLists({ payload: { filters, id = null } }) {
 function* updateShoppingListItem({ payload: { description, id, done } }) {
   yield put({ type: REQUEST, payload: true });
   yield put({ type: SET_ERROR, payload: { isError: false, errorText: '' } });
+
   const token = yield select(getToken);
+  const isLogged = yield select(getIsLogged);
+
+  if (!isLogged) {
+    return;
+  }
 
   try {
     const response = yield call(putListItem, { description, id, done, token });
@@ -234,6 +248,11 @@ function* createShoppingListItem({ payload: { description, done } }) {
   yield put({ type: REQUEST, payload: true });
 
   const token = yield select(getToken);
+  const isLogged = yield select(getIsLogged);
+
+  if (!isLogged) {
+    return;
+  }
 
   try {
     const response = yield call(postListItem, { description, done, token });
@@ -254,7 +273,13 @@ function* createShoppingListItem({ payload: { description, done } }) {
 function* updateShoppingList({ payload: { name, id, done } }) {
   yield put({ type: SET_ERROR, payload: { isError: false, errorText: '' } });
   yield put({ type: REQUEST, payload: true });
+
   const token = yield select(getToken);
+  const isLogged = yield select(getIsLogged);
+
+  if (!isLogged) {
+    return;
+  }
 
   try {
     const response = yield call(putList, { name, id, done, token });
@@ -278,6 +303,12 @@ function* createShoppingList({ payload: { name, done, items } }) {
 
   const token = yield select(getToken);
   const user = yield select(getUser);
+  const isLogged = yield select(getIsLogged);
+
+  if (!isLogged) {
+    return;
+  }
+
   let responses = [];
 
   try {
@@ -349,6 +380,12 @@ function* updateAll({ payload: { id, name, newItems, deletedItems, changedItems 
   yield put({ type: REQUEST, payload: true });
 
   const token = yield select(getToken);
+  const isLogged = yield select(getIsLogged);
+
+  if (!isLogged) {
+    return;
+  }
+
   let responses = [];
 
   try {
@@ -440,6 +477,11 @@ function* saveArchived({ payload: { name, items } }) {
 
   const token = yield select(getToken);
   const user = yield select(getUser);
+  const isLogged = yield select(getIsLogged);
+
+  if (!isLogged) {
+    return;
+  }
 
   let list = {};
 
