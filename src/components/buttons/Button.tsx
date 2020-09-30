@@ -14,7 +14,7 @@ const ButtonStyled = styled.button<Button>`
   transition: background-color 300ms ease-in-out;
   border: 2px solid ${({ theme }) => theme.mainColorHover};
   background-color: ${({ theme }) => theme.mainColor};
-  border-radius: 5px;
+  border-radius: 20px;
   text-weight: 600;
   font-size: 16px;
   box-shadow: 0 4px 4px lightgray;
