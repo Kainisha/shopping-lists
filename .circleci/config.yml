@@ -37,6 +37,8 @@ jobs:
           cache-path: ~/project/node_modules
       - run: npm run build
       - run: sudo npm install netlify-cli -g
+      - run: npm run build
+      - run: netlify deploy --prod --dir build --auth acdccc8efc3c17ec84a54bee2944ae9c2027d438fabf93a2cc787857a29623fe --site bf2810cb-230b-49f4-9721-1c8971fae473
 workflows:
   tests-build:
     jobs:
