@@ -6,10 +6,24 @@ import moment from 'moment';
 import { REQUEST, SET_USER, SET_ERROR, LOGOUT_USER } from 'actions';
 import { LOCAL_STORAGE } from 'constants.js';
 
+const checkIsLogged = () => {
+  const { TOKEN_EXPIRES_KEY } = LOCAL_STORAGE;
+  const expiresInStorage = localStorage.getItem(TOKEN_EXPIRES_KEY);
+
+  if (expiresInStorage === null) {
+    return false;
+  }
+
+  const expiresIn = moment.unix(parseInt(expiresInStorage, 10));
+  const nowDate = moment();
+
+  return !nowDate.isAfter(expiresIn);
+};
+
 const initState = {
   token: '',
   user: {},
-  isLogged: false,
+  isLogged: checkIsLogged(),
   isFetching: false,
   isError: false,
   errorText: '',
